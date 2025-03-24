@@ -27,7 +27,6 @@ import org.apache.tinkerpop.gremlin.process.traversal.step.util.Parameters;
 import org.apache.tinkerpop.gremlin.process.traversal.step.util.WithOptions;
 import org.apache.tinkerpop.gremlin.process.traversal.traverser.TraverserRequirement;
 import org.apache.tinkerpop.gremlin.process.traversal.util.TraversalProduct;
-import org.apache.tinkerpop.gremlin.process.traversal.util.TraversalRing;
 import org.apache.tinkerpop.gremlin.process.traversal.util.TraversalUtil;
 import org.apache.tinkerpop.gremlin.structure.Element;
 import org.apache.tinkerpop.gremlin.structure.Property;
@@ -61,18 +60,14 @@ public class PropertyMapStep<K,E> extends ScalarMapStep<Element, Map<K, E>>
     protected Traversal.Admin<Element, ? extends Property> propertyTraversal;
 
     protected Parameters parameters = new Parameters();
-    protected TraversalRing<K, E> traversalRing;
+    protected Traversal.Admin<K, E> valueTraversal;
 
-    public PropertyMapStep(final Traversal.Admin traversal, final PropertyType propertyType, TraversalRing<K, E> traversalRing, final String... propertyKeys) {
+    public PropertyMapStep(final Traversal.Admin traversal, final PropertyType propertyType, final String... propertyKeys) {
         super(traversal);
         this.propertyKeys = propertyKeys;
         this.returnType = propertyType;
         this.propertyTraversal = null;
-        this.traversalRing = traversalRing;
-    }
-
-    public PropertyMapStep(final Traversal.Admin traversal, final PropertyType propertyType, final String... propertyKeys) {
-        this(traversal, propertyType, new TraversalRing<>(), propertyKeys);
+        this.valueTraversal = null;
     }
 
     public PropertyMapStep(final Traversal.Admin traversal, final int options, final PropertyType propertyType, final String... propertyKeys) {
@@ -117,13 +112,17 @@ public class PropertyMapStep<K,E> extends ScalarMapStep<Element, Map<K, E>>
         final List<Traversal.Admin<K, E>> result = new ArrayList<>();
         if (null != this.propertyTraversal)
             result.add((Traversal.Admin) propertyTraversal);
-        result.addAll(this.traversalRing.getTraversals());
+        result.add(this.valueTraversal);
         return Collections.unmodifiableList(result);
     }
 
     @Override
     public void modulateBy(final Traversal.Admin<?, ?> selectTraversal) {
-        this.traversalRing.addTraversal(this.integrateChild(selectTraversal));
+        if (null == valueTraversal) {
+            this.valueTraversal = this.integrateChild(selectTraversal);
+        } else {
+            throw new IllegalArgumentException("propertyMap() step can only have one by modulator");
+        }
     }
 
     public void setPropertyTraversal(final Traversal.Admin<Element, ? extends Property> propertyTraversal) {
@@ -144,7 +143,7 @@ public class PropertyMapStep<K,E> extends ScalarMapStep<Element, Map<K, E>>
 
     public String toString() {
         return StringFactory.stepString(this, Arrays.asList(this.propertyKeys),
-                this.traversalRing, this.returnType.name().toLowerCase());
+                this.valueTraversal, this.returnType.name().toLowerCase());
     }
 
     @Override
@@ -152,7 +151,7 @@ public class PropertyMapStep<K,E> extends ScalarMapStep<Element, Map<K, E>>
         final PropertyMapStep<K,E> clone = (PropertyMapStep<K,E>) super.clone();
         if (null != this.propertyTraversal)
             clone.propertyTraversal = this.propertyTraversal.clone();
-        clone.traversalRing = this.traversalRing.clone();
+        clone.valueTraversal = this.valueTraversal.clone();
         return clone;
     }
 
@@ -164,7 +163,7 @@ public class PropertyMapStep<K,E> extends ScalarMapStep<Element, Map<K, E>>
         for (final String propertyKey : this.propertyKeys) {
             result ^= Objects.hashCode(propertyKey);
         }
-        return result ^ this.traversalRing.hashCode();
+        return result ^ this.valueTraversal.hashCode();
     }
 
     @Override
@@ -172,7 +171,8 @@ public class PropertyMapStep<K,E> extends ScalarMapStep<Element, Map<K, E>>
         super.setTraversal(parentTraversal);
         if (null != this.propertyTraversal)
             this.integrateChild(this.propertyTraversal);
-        this.traversalRing.getTraversals().forEach(this::integrateChild);
+        if (null != this.valueTraversal)
+            integrateChild(this.valueTraversal);
     }
 
     @Override
@@ -241,22 +241,21 @@ public class PropertyMapStep<K,E> extends ScalarMapStep<Element, Map<K, E>>
     }
 
     protected void applyTraversalRingToMap(Map<Object, Object> map){
-        if (!traversalRing.isEmpty()) {
+        if (this.valueTraversal != null) {
             // will cop a ConcurrentModification if a key is dropped so need this little copy here
             final List<Object> keys = new ArrayList<>(map.keySet());
             for (final Object key : keys) {
                 map.compute(key, (k, v) -> {
-                    final TraversalProduct product = TraversalUtil.produce(v, (Traversal.Admin) this.traversalRing.next());
+                    final TraversalProduct product = TraversalUtil.produce(v, (Traversal.Admin) this.valueTraversal);
 
                     // compute() should take the null and remove the key
                     return product.isProductive() ? product.get() : null;
                 });
             }
-            this.traversalRing.reset();
         }
     }
 
-    public TraversalRing<K, E> getTraversalRing() {
-        return traversalRing;
+    public Traversal.Admin<K, E> getValueTraversal() {
+        return this.valueTraversal;
     }
 }
