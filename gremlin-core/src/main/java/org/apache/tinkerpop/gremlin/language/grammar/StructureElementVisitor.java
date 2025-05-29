@@ -29,10 +29,4 @@ public class StructureElementVisitor extends GremlinBaseVisitor<Element> {
     public StructureElementVisitor(final GremlinAntlrToJava antlr) {
         this.antlr = antlr;
     }
-
-    @Override
-    public Vertex visitStructureVertexLiteral(final GremlinParser.StructureVertexLiteralContext ctx) {
-        return new ReferenceVertex(antlr.argumentVisitor.visitGenericArgument(ctx.genericArgument()),
-                (String) antlr.argumentVisitor.visitStringArgument(ctx.stringArgument()));
-    }
 }
