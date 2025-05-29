@@ -521,7 +521,8 @@ traversalMethod_format
 
 traversalMethod_from
     : K_FROM LPAREN stringLiteral RPAREN #traversalMethod_from_String
-    | K_FROM LPAREN structureVertexArgument RPAREN #traversalMethod_from_Vertex
+    | K_FROM LPAREN genericLiteral RPAREN #traversalMethod_from_GenricLiteral
+    | K_FROM LPAREN genericArgument RPAREN #traversalMethod_from_GenricArgument
     | K_FROM LPAREN nestedTraversal RPAREN #traversalMethod_from_Traversal
     ;
 
@@ -878,7 +879,8 @@ traversalMethod_times
 traversalMethod_to
     : K_TO LPAREN traversalDirection (COMMA stringNullableLiteralVarargs)? RPAREN #traversalMethod_to_Direction_String
     | K_TO LPAREN stringLiteral RPAREN #traversalMethod_to_String
-    | K_TO LPAREN structureVertexArgument RPAREN #traversalMethod_to_Vertex
+    | K_TO LPAREN genericLiteral RPAREN #traversalMethod_to_GenricLiteral
+    | K_TO LPAREN genericArgument RPAREN #traversalMethod_to_GenricArgument
     | K_TO LPAREN nestedTraversal RPAREN #traversalMethod_to_Traversal
     ;
 
@@ -954,14 +956,6 @@ traversalMethod_write
 /*********************************************
     ARGUMENT AND TERMINAL RULES
 **********************************************/
-
-// There is syntax available in the construction of a ReferenceVertex, that allows the label to not be specified.
-// That use case is related to OLAP when the StarGraph does not preserve the label of adjacent vertices or other
-// fail fast scenarios in that processing model. It is not relevant to the grammar however when a user is creating
-// the Vertex to be used in a Traversal and therefore both id and label are required.
-structureVertexLiteral
-    : K_NEW? (K_VERTEX | K_REFERENCEVERTEX) LPAREN genericArgument COMMA stringArgument RPAREN
-    ;
 
 traversalStrategy
     : K_NEW? classType (LPAREN (configuration (COMMA configuration)*)? RPAREN)?
@@ -1507,11 +1501,6 @@ nullableGenericLiteralMap
     | nullLiteral
     ;
 
-structureVertexArgument
-    : structureVertexLiteral
-    | variable
-    ;
-
 traversalStrategyVarargs
     : traversalStrategyExpr?
     ;
@@ -1579,7 +1568,6 @@ genericLiteral
     | traversalMerge
     | traversalPick
     | traversalDT
-    | structureVertexLiteral
     | genericSetLiteral
     | genericCollectionLiteral
     | genericRangeLiteral
@@ -1862,7 +1850,6 @@ keyword
     | K_RANGE
     | K_READ
     | K_READER
-    | K_REFERENCEVERTEX
     | K_REGEX
     | K_REPLACE
     | K_REPEAT
@@ -1918,7 +1905,6 @@ keyword
     | K_VALUEMAP
     | K_VALUES
     | K_VALUE
-    | K_VERTEX
     | K_WHERE
     | K_WITH
     | K_WITHBULK
@@ -2123,7 +2109,6 @@ K_PRODUCT: 'product';
 K_RANGE: 'range';
 K_READ: 'read';
 K_READER: 'reader';
-K_REFERENCEVERTEX: 'ReferenceVertex';
 K_REGEX: 'regex';
 K_REPLACE: 'replace';
 K_REPEAT: 'repeat';
@@ -2179,7 +2164,6 @@ K_V: 'V';
 K_VALUEMAP: 'valueMap';
 K_VALUES: 'values';
 K_VALUE: 'value';
-K_VERTEX: 'Vertex';
 K_WHERE: 'where';
 K_WITH: 'with';
 K_WITHBULK: 'withBulk';
