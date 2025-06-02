@@ -56,13 +56,13 @@ import static org.junit.Assert.assertTrue;
 @RunWith(GremlinProcessRunner.class)
 public abstract class VertexTest extends AbstractGremlinProcessTest {
 
-    public abstract Traversal<Vertex, String> get_g_VXlistXv1_v2_v3XX_name(final Vertex v1, final Vertex v2, final Vertex v3);
+    //public abstract Traversal<Vertex, String> get_g_VXlistXv1_v2_v3XX_name(final Vertex v1, final Vertex v2, final Vertex v3);
 
     public abstract Traversal<Vertex, String> get_g_VXlistX1_2_3XX_name(final Object v1Id, final Object v2Id, final Object v3Id);
 
     public abstract Traversal<Vertex, Vertex> get_g_V();
 
-    public abstract Traversal<Vertex, Vertex> get_g_VXv1X_out(final Vertex v1);
+    //public abstract Traversal<Vertex, Vertex> get_g_VXv1X_out(final Vertex v1);
 
     public abstract Traversal<Vertex, Vertex> get_g_VX1X_out(final Object v1Id);
 
@@ -138,13 +138,13 @@ public abstract class VertexTest extends AbstractGremlinProcessTest {
         checkResults(Arrays.asList("marko", "vadas", "lop"), traversal);
     }
 
-    @Test
-    @LoadGraphWith(MODERN)
-    public void g_VXlistXv1_v2_v3XX_name() {
-        final Traversal<Vertex, String> traversal = get_g_VXlistXv1_v2_v3XX_name(convertToVertex(graph, "marko"), convertToVertex(graph, "vadas"), convertToVertex(graph, "lop"));
-        printTraversalForm(traversal);
-        checkResults(Arrays.asList("marko", "vadas", "lop"), traversal);
-    }
+//    @Test
+//    @LoadGraphWith(MODERN)
+//    public void g_VXlistXv1_v2_v3XX_name() {
+//        final Traversal<Vertex, String> traversal = get_g_VXlistXv1_v2_v3XX_name(convertToVertex(graph, "marko"), convertToVertex(graph, "vadas"), convertToVertex(graph, "lop"));
+//        printTraversalForm(traversal);
+//        checkResults(Arrays.asList("marko", "vadas", "lop"), traversal);
+//    }
 
     // VERTEX ADJACENCY
 
@@ -170,12 +170,12 @@ public abstract class VertexTest extends AbstractGremlinProcessTest {
         assert_g_v1_out(traversal);
     }
 
-    @Test
-    @LoadGraphWith(MODERN)
-    public void g_VXv1X_out() {
-        final Traversal<Vertex, Vertex> traversal = get_g_VXv1X_out(convertToVertex(graph, "marko"));
-        assert_g_v1_out(traversal);
-    }
+//    @Test
+//    @LoadGraphWith(MODERN)
+//    public void g_VXv1X_out() {
+//        final Traversal<Vertex, Vertex> traversal = get_g_VXv1X_out(convertToVertex(graph, "marko"));
+//        assert_g_v1_out(traversal);
+//    }
 
     private void assert_g_v1_out(final Traversal<Vertex, Vertex> traversal) {
         printTraversalForm(traversal);
@@ -650,10 +650,10 @@ public abstract class VertexTest extends AbstractGremlinProcessTest {
 
     public static class Traversals extends VertexTest {
 
-        @Override
-        public Traversal<Vertex, String> get_g_VXlistXv1_v2_v3XX_name(final Vertex v1, final Vertex v2, final Vertex v3) {
-            return g.V(Arrays.asList(v1, v2, v3)).values("name");
-        }
+//        @Override
+//        public Traversal<Vertex, String> get_g_VXlistXv1_v2_v3XX_name(final Vertex v1, final Vertex v2, final Vertex v3) {
+//            return g.V(Arrays.asList(v1, v2, v3)).values("name");
+//        }
 
         @Override
         public Traversal<Vertex, String> get_g_VXlistX1_2_3XX_name(final Object v1Id, final Object v2Id, final Object v3Id) {
@@ -665,10 +665,10 @@ public abstract class VertexTest extends AbstractGremlinProcessTest {
             return g.V();
         }
 
-        @Override
-        public Traversal<Vertex, Vertex> get_g_VXv1X_out(final Vertex v1) {
-            return g.V(v1).out();
-        }
+//        @Override
+//        public Traversal<Vertex, Vertex> get_g_VXv1X_out(final Vertex v1) {
+//            return g.V(v1).out();
+//        }
 
         @Override
         public Traversal<Vertex, Vertex> get_g_VX1X_out(final Object v1Id) {

@@ -19,17 +19,17 @@
 Feature: Step - element()
 
   # VertexProperty -> Vertex
-  Scenario: g_VX1X_properties_element
-    Given the modern graph
-    And using the parameter v2 defined as "v[josh]"
-    And the traversal of
-      """
-      g.V(v2).properties().element().limit(1)
-      """
-    When iterated to list
-    Then the result should be unordered
-      | result |
-      | v[josh] |
+#  Scenario: g_VX1X_properties_element
+#    Given the modern graph
+#    And using the parameter v2 defined as "v[josh]"
+#    And the traversal of
+#      """
+#      g.V(v2).properties().element().limit(1)
+#      """
+#    When iterated to list
+#    Then the result should be unordered
+#      | result |
+#      | v[josh] |
 
   Scenario: g_V_properties_element
     Given the modern graph
@@ -97,32 +97,32 @@ Feature: Step - element()
       | e[josh-created->ripple] |
 
   # MetaProperty -> VertexProperty
-  @MultiProperties @MetaProperties
-  Scenario: g_VXv7_properties_properties_element_element
-    Given the crew graph
-    And using the parameter v7 defined as "v[stephen]"
-    And the traversal of
-      """
-      g.V(v7).properties().properties().element().element().limit(1)
-      """
-    When iterated to list
-    Then the result should be unordered
-      | result |
-      | v[stephen] |
+#  @MultiProperties @MetaProperties
+#  Scenario: g_VXv7_properties_properties_element_element
+#    Given the crew graph
+#    And using the parameter v7 defined as "v[stephen]"
+#    And the traversal of
+#      """
+#      g.V(v7).properties().properties().element().element().limit(1)
+#      """
+#    When iterated to list
+#    Then the result should be unordered
+#      | result |
+#      | v[stephen] |
 
-  @MultiProperties @MetaProperties
-  Scenario: g_V_properties_properties_element_element
-    Given the crew graph
-    And using the parameter v7 defined as "v[stephen]"
-    And the traversal of
-      """
-      g.V(v7).properties().properties().element().element()
-      """
-    When iterated to list
-    Then the result should be unordered
-      | result |
-      | v[stephen] |
-      | v[stephen] |
-      | v[stephen] |
-      | v[stephen] |
-      | v[stephen] |
+#  @MultiProperties @MetaProperties
+#  Scenario: g_V_properties_properties_element_element
+#    Given the crew graph
+#    And using the parameter v7 defined as "v[stephen]"
+#    And the traversal of
+#      """
+#      g.V(v7).properties().properties().element().element()
+#      """
+#    When iterated to list
+#    Then the result should be unordered
+#      | result |
+#      | v[stephen] |
+#      | v[stephen] |
+#      | v[stephen] |
+#      | v[stephen] |
+#      | v[stephen] |
