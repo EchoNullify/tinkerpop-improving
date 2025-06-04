@@ -40,64 +40,64 @@ class TestDriverRemoteConnection(object):
 
     # this is a temporary test for basic graphSONV4 connectivity, once all types are implemented, enable graphSON testing
     # in conftest.py and remove this
-#     def test_graphSONV4_temp(self):
-#         remote_conn = DriverRemoteConnection(test_no_auth_url, 'gmodern',
-#                                              request_serializer=serializer.GraphSONSerializersV4(),
-#                                              response_serializer=serializer.GraphSONSerializersV4())
-#         g = traversal().with_(remote_conn)
-#         assert long(6) == g.V().count().to_list()[0]
-#         # #
-#         assert Vertex(1) == g.V(1).next()
-#         assert Vertex(1) == g.V(Vertex(1)).next()
-#         assert 1 == g.V(1).id_().next()
-#         # assert Traverser(Vertex(1)) == g.V(1).nextTraverser()  # TODO check back after bulking added back
-#         assert 1 == len(g.V(1).to_list())
-#         assert isinstance(g.V(1).to_list(), list)
-#         results = g.V().repeat(__.out()).times(2).name
-#         results = results.to_list()
-#         assert 2 == len(results)
-#         assert "lop" in results
-#         assert "ripple" in results
-#         # #
-#         assert 10 == g.V().repeat(__.both()).times(5)[0:10].count().next()
-#         assert 1 == g.V().repeat(__.both()).times(5)[0:1].count().next()
-#         assert 0 == g.V().repeat(__.both()).times(5)[0:0].count().next()
-#         assert 4 == g.V()[2:].count().next()
-#         assert 2 == g.V()[:2].count().next()
-#         # #
-#         results = g.with_side_effect('a', ['josh', 'peter']).V(1).out('created').in_('created').values('name').where(
-#             P.within('a')).to_list()
-#         assert 2 == len(results)
-#         assert 'josh' in results
-#         assert 'peter' in results
-#         # #
-#         results = g.V().has('name', 'peter').as_('a').out('created').as_('b').select('a', 'b').by(
-#             __.value_map()).to_list()
-#         assert 1 == len(results)
-#         assert 'peter' == results[0]['a']['name'][0]
-#         assert 35 == results[0]['a']['age'][0]
-#         assert 'lop' == results[0]['b']['name'][0]
-#         assert 'java' == results[0]['b']['lang'][0]
-#         assert 2 == len(results[0]['a'])
-#         assert 2 == len(results[0]['b'])
-#         # #
-#         results = g.V(1).inject(g.V(2).next()).values('name').to_list()
-#         assert 2 == len(results)
-#         assert 'marko' in results
-#         assert 'vadas' in results
-#         # #
-#         # this test just validates that the underscored versions of steps conflicting with Gremlin work
-#         # properly and can be removed when the old steps are removed - TINKERPOP-2272
-#         results = g.V().filter_(__.values('age').sum_().and_(
-#             __.max_().is_(P.gt(0)), __.min_().is_(P.gt(0)))).range_(0, 1).id_().next()
-#         assert 1 == results
-#         # #
-#         # test dict keys
-#         # types for dict
-#         results = g.V().has('person', 'name', 'marko').element_map("name").group_count().next()
-#         assert {HashableDict.of({T.id: 1, T.label: 'person', 'name': 'marko'}): 1} == results
-#         results = g.V().has('person', 'name', 'marko').both('knows').group_count().by(__.values('name').fold()).next()
-#         assert {tuple(['vadas']): 1, tuple(['josh']): 1} == results
+    def test_graphSONV4_temp(self):
+        remote_conn = DriverRemoteConnection(test_no_auth_url, 'gmodern',
+                                             request_serializer=serializer.GraphSONSerializersV4(),
+                                             response_serializer=serializer.GraphSONSerializersV4())
+        g = traversal().with_(remote_conn)
+        assert long(6) == g.V().count().to_list()[0]
+        # #
+        assert Vertex(1) == g.V(1).next()
+        assert Vertex(1) == g.V(Vertex(1)).next()
+        assert 1 == g.V(1).id_().next()
+        # assert Traverser(Vertex(1)) == g.V(1).nextTraverser()  # TODO check back after bulking added back
+        assert 1 == len(g.V(1).to_list())
+        assert isinstance(g.V(1).to_list(), list)
+        results = g.V().repeat(__.out()).times(2).name
+        results = results.to_list()
+        assert 2 == len(results)
+        assert "lop" in results
+        assert "ripple" in results
+        # #
+        assert 10 == g.V().repeat(__.both()).times(5)[0:10].count().next()
+        assert 1 == g.V().repeat(__.both()).times(5)[0:1].count().next()
+        assert 0 == g.V().repeat(__.both()).times(5)[0:0].count().next()
+        assert 4 == g.V()[2:].count().next()
+        assert 2 == g.V()[:2].count().next()
+        # #
+        results = g.with_side_effect('a', ['josh', 'peter']).V(1).out('created').in_('created').values('name').where(
+            P.within('a')).to_list()
+        assert 2 == len(results)
+        assert 'josh' in results
+        assert 'peter' in results
+        # #
+        results = g.V().has('name', 'peter').as_('a').out('created').as_('b').select('a', 'b').by(
+            __.value_map()).to_list()
+        assert 1 == len(results)
+        assert 'peter' == results[0]['a']['name'][0]
+        assert 35 == results[0]['a']['age'][0]
+        assert 'lop' == results[0]['b']['name'][0]
+        assert 'java' == results[0]['b']['lang'][0]
+        assert 2 == len(results[0]['a'])
+        assert 2 == len(results[0]['b'])
+        # #
+        results = g.V(1).inject(g.V(2).next()).values('name').to_list()
+        assert 2 == len(results)
+        assert 'marko' in results
+        assert 'vadas' in results
+        # #
+        # this test just validates that the underscored versions of steps conflicting with Gremlin work
+        # properly and can be removed when the old steps are removed - TINKERPOP-2272
+        results = g.V().filter_(__.values('age').sum_().and_(
+            __.max_().is_(P.gt(0)), __.min_().is_(P.gt(0)))).range_(0, 1).id_().next()
+        assert 1 == results
+        # #
+        # test dict keys
+        # types for dict
+        results = g.V().has('person', 'name', 'marko').element_map("name").group_count().next()
+        assert {HashableDict.of({T.id: 1, T.label: 'person', 'name': 'marko'}): 1} == results
+        results = g.V().has('person', 'name', 'marko').both('knows').group_count().by(__.values('name').fold()).next()
+        assert {tuple(['vadas']): 1, tuple(['josh']): 1} == results
 
     def test_bulk_request_option(self, remote_connection):
         g = traversal().with_(remote_connection)
@@ -127,84 +127,84 @@ class TestDriverRemoteConnection(object):
                                                                              'params': {'ids': [1, 2, 3]}}
         assert 3 == t.to_list()[0]
 
-#     def test_traversals(self, remote_connection):
-#         statics.load_statics(globals())
-#         g = traversal().with_(remote_connection)
-#
-#         assert long(6) == g.V().count().to_list()[0]
-#         # #
-#         assert Vertex(1) == g.V(1).next()
-#         assert Vertex(1) == g.V(Vertex(1)).next()
-#         assert 1 == g.V(1).id_().next()
-#         # assert Traverser(Vertex(1)) == g.V(1).nextTraverser()  # TODO check back after bulking added back
-#         assert 1 == len(g.V(1).to_list())
-#         assert isinstance(g.V(1).to_list(), list)
-#         results = g.V().repeat(__.out()).times(2).name
-#         results = results.to_list()
-#         assert 2 == len(results)
-#         assert "lop" in results
-#         assert "ripple" in results
-#         # #
-#         assert 10 == g.V().repeat(__.both()).times(5)[0:10].count().next()
-#         assert 1 == g.V().repeat(__.both()).times(5)[0:1].count().next()
-#         assert 0 == g.V().repeat(__.both()).times(5)[0:0].count().next()
-#         assert 4 == g.V()[2:].count().next()
-#         assert 2 == g.V()[:2].count().next()
-#         # #
-#         results = g.with_side_effect('a', ['josh', 'peter']).V(1).out('created').in_('created').values('name').where(
-#             P.within('a')).to_list()
-#         assert 2 == len(results)
-#         assert 'josh' in results
-#         assert 'peter' in results
-#         # #
-#         # # todo: enable when profile/explain serialization is implemented
-#         # results = g.V().out().profile().to_list()
-#         # assert 1 == len(results)
-#         # assert 'metrics' in results[0]
-#         # assert 'dur' in results[0]
-#         # #
-#         results = g.V().has('name', 'peter').as_('a').out('created').as_('b').select('a', 'b').by(
-#             __.value_map()).to_list()
-#         assert 1 == len(results)
-#         assert 'peter' == results[0]['a']['name'][0]
-#         assert 35 == results[0]['a']['age'][0]
-#         assert 'lop' == results[0]['b']['name'][0]
-#         assert 'java' == results[0]['b']['lang'][0]
-#         assert 2 == len(results[0]['a'])
-#         assert 2 == len(results[0]['b'])
-#         # #
-#         results = g.V(1).inject(g.V(2).next()).values('name').to_list()
-#         assert 2 == len(results)
-#         assert 'marko' in results
-#         assert 'vadas' in results
-#         # #
-#         # this test just validates that the underscored versions of steps conflicting with Gremlin work
-#         # properly and can be removed when the old steps are removed - TINKERPOP-2272
-#         results = g.V().filter_(__.values('age').sum_().and_(
-#             __.max_().is_(P.gt(0)), __.min_().is_(P.gt(0)))).range_(0, 1).id_().next()
-#         assert 1 == results
-#         # #
-#         # test dict keys
-#         # types for dict
-#         results = g.V().has('person', 'name', 'marko').element_map("name").group_count().next()
-#         assert {HashableDict.of({T.id: 1, T.label: 'person', 'name': 'marko'}): 1} == results
-#         results = g.V().has('person', 'name', 'marko').both('knows').group_count().by(__.values('name').fold()).next()
-#         assert {tuple(['vadas']): 1, tuple(['josh']): 1} == results
-#         # #
-#         # test materializeProperties in V - GraphSON will deserialize into None and GraphBinary to []
-#         results = g.with_("materializeProperties", "tokens").V().to_list()
-#         for v in results:
-#             assert v.properties is None or len(v.properties) == 0
-#         # #
-#         # test materializeProperties in E - GraphSON will deserialize into None and GraphBinary to []
-#         results = g.with_("materializeProperties", "tokens").E().to_list()
-#         for e in results:
-#             assert e.properties is None or len(e.properties) == 0
-#         # #
-#         # test materializeProperties in VP - GraphSON will deserialize into None and GraphBinary to []
-#         results = g.with_("materializeProperties", "tokens").V().properties().to_list()
-#         for vp in results:
-#             assert vp.properties is None or len(vp.properties) == 0
+    def test_traversals(self, remote_connection):
+        statics.load_statics(globals())
+        g = traversal().with_(remote_connection)
+
+        assert long(6) == g.V().count().to_list()[0]
+        # #
+        assert Vertex(1) == g.V(1).next()
+        assert Vertex(1) == g.V(Vertex(1)).next()
+        assert 1 == g.V(1).id_().next()
+        # assert Traverser(Vertex(1)) == g.V(1).nextTraverser()  # TODO check back after bulking added back
+        assert 1 == len(g.V(1).to_list())
+        assert isinstance(g.V(1).to_list(), list)
+        results = g.V().repeat(__.out()).times(2).name
+        results = results.to_list()
+        assert 2 == len(results)
+        assert "lop" in results
+        assert "ripple" in results
+        # #
+        assert 10 == g.V().repeat(__.both()).times(5)[0:10].count().next()
+        assert 1 == g.V().repeat(__.both()).times(5)[0:1].count().next()
+        assert 0 == g.V().repeat(__.both()).times(5)[0:0].count().next()
+        assert 4 == g.V()[2:].count().next()
+        assert 2 == g.V()[:2].count().next()
+        # #
+        results = g.with_side_effect('a', ['josh', 'peter']).V(1).out('created').in_('created').values('name').where(
+            P.within('a')).to_list()
+        assert 2 == len(results)
+        assert 'josh' in results
+        assert 'peter' in results
+        # #
+        # # todo: enable when profile/explain serialization is implemented
+        # results = g.V().out().profile().to_list()
+        # assert 1 == len(results)
+        # assert 'metrics' in results[0]
+        # assert 'dur' in results[0]
+        # #
+        results = g.V().has('name', 'peter').as_('a').out('created').as_('b').select('a', 'b').by(
+            __.value_map()).to_list()
+        assert 1 == len(results)
+        assert 'peter' == results[0]['a']['name'][0]
+        assert 35 == results[0]['a']['age'][0]
+        assert 'lop' == results[0]['b']['name'][0]
+        assert 'java' == results[0]['b']['lang'][0]
+        assert 2 == len(results[0]['a'])
+        assert 2 == len(results[0]['b'])
+        # #
+        results = g.V(1).inject(g.V(2).next()).values('name').to_list()
+        assert 2 == len(results)
+        assert 'marko' in results
+        assert 'vadas' in results
+        # #
+        # this test just validates that the underscored versions of steps conflicting with Gremlin work
+        # properly and can be removed when the old steps are removed - TINKERPOP-2272
+        results = g.V().filter_(__.values('age').sum_().and_(
+            __.max_().is_(P.gt(0)), __.min_().is_(P.gt(0)))).range_(0, 1).id_().next()
+        assert 1 == results
+        # #
+        # test dict keys
+        # types for dict
+        results = g.V().has('person', 'name', 'marko').element_map("name").group_count().next()
+        assert {HashableDict.of({T.id: 1, T.label: 'person', 'name': 'marko'}): 1} == results
+        results = g.V().has('person', 'name', 'marko').both('knows').group_count().by(__.values('name').fold()).next()
+        assert {tuple(['vadas']): 1, tuple(['josh']): 1} == results
+        # #
+        # test materializeProperties in V - GraphSON will deserialize into None and GraphBinary to []
+        results = g.with_("materializeProperties", "tokens").V().to_list()
+        for v in results:
+            assert v.properties is None or len(v.properties) == 0
+        # #
+        # test materializeProperties in E - GraphSON will deserialize into None and GraphBinary to []
+        results = g.with_("materializeProperties", "tokens").E().to_list()
+        for e in results:
+            assert e.properties is None or len(e.properties) == 0
+        # #
+        # test materializeProperties in VP - GraphSON will deserialize into None and GraphBinary to []
+        results = g.with_("materializeProperties", "tokens").V().properties().to_list()
+        for vp in results:
+            assert vp.properties is None or len(vp.properties) == 0
 
     def test_iteration(self, remote_connection):
         statics.load_statics(globals())
