@@ -39,10 +39,10 @@ import org.apache.tinkerpop.gremlin.tinkergraph.process.computer.TinkerGraphComp
         test = "org.apache.tinkerpop.gremlin.process.traversal.step.branch.ChooseTest",
         method = "g_injectX2X_chooseXisX1X__constantX10Xfold__foldX",
         reason = "The inject() step is not supported by GraphComputer")
-//@Graph.OptOut(
-//        test = "org.apache.tinkerpop.gremlin.process.traversal.step.map.GraphTest",
-//        method = "g_V_hasLabelXpersonX_asXpX_VXsoftwareX_addInEXuses_pX",
-//        reason = "Mid-traversal V()/E() is currently not supported on GraphComputer")
+@Graph.OptOut(
+        test = "org.apache.tinkerpop.gremlin.process.traversal.step.map.GraphTest",
+        method = "g_V_hasLabelXpersonX_asXpX_VXsoftwareX_addInEXuses_pX",
+        reason = "Mid-traversal V()/E() is currently not supported on GraphComputer")
 @Graph.OptOut(
         test = "org.apache.tinkerpop.gremlin.process.traversal.step.map.GraphTest",
         method = "g_V_hasXname_GarciaX_inXsungByX_asXsongX_V_hasXname_Willie_DixonX_inXwrittenByX_whereXeqXsongXX_name",

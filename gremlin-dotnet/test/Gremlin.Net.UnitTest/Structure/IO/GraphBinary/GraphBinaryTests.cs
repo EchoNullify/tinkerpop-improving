@@ -411,7 +411,7 @@ namespace Gremlin.Net.UnitTest.Structure.IO.GraphBinary
 
             await Assert.ThrowsAsync<IOException>(() => writer.WriteNonNullableValueAsync(null!, serializationStream));
         }
-
+        
         [Fact]
         public async Task TestEdge()
         {
@@ -419,11 +419,11 @@ namespace Gremlin.Net.UnitTest.Structure.IO.GraphBinary
             var writer = CreateGraphBinaryWriter();
             var reader = CreateGraphBinaryReader();
             var serializationStream = new MemoryStream();
-
+            
             await writer.WriteAsync(expected, serializationStream);
             serializationStream.Position = 0;
             var actual = await reader.ReadAsync(serializationStream);
-
+            
             Assert.Equal(expected, actual);
         }
 
