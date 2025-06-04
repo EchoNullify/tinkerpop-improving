@@ -1607,6 +1607,26 @@ public interface GraphTraversal<S, E> extends Traversal<S, E> {
     }
 
     /**
+     * When used as a modifier to {@link #addE(String)} this method specifies the traversal to use for selecting the
+     * outgoing vertex of the newly added {@link Edge}.
+     *
+     * @param fromVertexId the vertex for selecting the outgoing vertex
+     * @return the traversal with the modified {@link AddEdgeStep}
+     * @see <a href="http://tinkerpop.apache.org/docs/${project.version}/reference/#addedge-step" target="_blank">Reference Documentation - From Step</a>
+     * @since 3.3.0
+     */
+    public default GraphTraversal<S, E> from(final Object fromVertexId) {
+        final Step<?,?> prev = this.asAdmin().getEndStep();
+        if (!(prev instanceof FromToModulating))
+            throw new IllegalArgumentException(String.format(
+                    "The from() step cannot follow %s", prev.getClass().getSimpleName()));
+
+        this.asAdmin().getGremlinLang().addStep(Symbols.from, fromVertexId);
+        ((FromToModulating) prev).addFrom(__.constant(fromVertexId).asAdmin());
+        return this;
+    }
+
+    /**
      * Provide {@code to()}-modulation to respective steps.
      *
      * @param toStepLabel the step label to modulate to.
@@ -1674,7 +1694,7 @@ public interface GraphTraversal<S, E> extends Traversal<S, E> {
      * @see <a href="http://tinkerpop.apache.org/docs/${project.version}/reference/#addedge-step" target="_blank">Reference Documentation - From Step</a>
      * @since 3.3.0
      */
-    public default GraphTraversal<S, E> to(final Vertex toVertex) {
+    public default GraphTraversal<S, E> to(final Object toVertex) {
         final Step<?,?> prev = this.asAdmin().getEndStep();
         if (!(prev instanceof FromToModulating))
             throw new IllegalArgumentException(String.format(

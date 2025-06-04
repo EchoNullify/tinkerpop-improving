@@ -413,6 +413,21 @@ namespace Gremlin.Net.UnitTest.Structure.IO.GraphBinary
         }
 
         [Fact]
+        public async Task TestEdge()
+        {
+            var expected = new Edge(123, new Vertex(1, "person"), "developed", new Vertex(10, "software"));
+            var writer = CreateGraphBinaryWriter();
+            var reader = CreateGraphBinaryReader();
+            var serializationStream = new MemoryStream();
+
+            await writer.WriteAsync(expected, serializationStream);
+            serializationStream.Position = 0;
+            var actual = await reader.ReadAsync(serializationStream);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
         public async Task TestPath()
         {
             var expected =

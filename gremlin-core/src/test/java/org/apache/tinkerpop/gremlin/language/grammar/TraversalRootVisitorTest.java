@@ -1113,10 +1113,10 @@ public class TraversalRootVisitorTest {
         compare(g.V().map(__.path().to("home")), eval("g.V().map(__.path().to(\"home\"))"));
     }
 
-//    @Test
-//    public void shouldParseTraversalMethod_to_Traversal() {
-//        compare(g.V().map(__.addE("as").to(V())), eval("g.V().map(__.addE('as').to(V()))"));
-//    }
+    @Test
+    public void shouldParseTraversalMethod_to_Traversal() {
+        compare(g.V().map(__.addE("as").to(V())), eval("g.V().map(__.addE('as').to(V()))"));
+    }
 
     @Test
     public void shouldParseTraversalMethod_toE() {

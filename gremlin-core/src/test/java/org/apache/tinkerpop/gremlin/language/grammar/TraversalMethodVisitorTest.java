@@ -970,10 +970,10 @@ public class TraversalMethodVisitorTest {
         compare(g.V().path().to("home"), eval("g.V().path().to(\"home\")"));
     }
 
-//    @Test
-//    public void shouldParseTraversalMethod_to_Traversal() throws Exception {
-//        compare(g.V().addE("as").to(V()), eval("g.V().addE('as').to(V())"));
-//    }
+    @Test
+    public void shouldParseTraversalMethod_to_Traversal() throws Exception {
+        compare(g.V().addE("as").to(V()), eval("g.V().addE('as').to(V())"));
+    }
 
     @Test
     public void shouldParseTraversalMethod_toE() throws Exception {
