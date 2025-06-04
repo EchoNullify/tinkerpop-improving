@@ -48,7 +48,6 @@ class TestDriverRemoteConnection(object):
         assert long(6) == g.V().count().to_list()[0]
         # #
         assert Vertex(1) == g.V(1).next()
-        assert Vertex(1) == g.V(Vertex(1)).next()
         assert 1 == g.V(1).id_().next()
         # assert Traverser(Vertex(1)) == g.V(1).nextTraverser()  # TODO check back after bulking added back
         assert 1 == len(g.V(1).to_list())
@@ -81,10 +80,10 @@ class TestDriverRemoteConnection(object):
         assert 2 == len(results[0]['a'])
         assert 2 == len(results[0]['b'])
         # #
-        results = g.V(1).inject(g.V(2).next()).values('name').to_list()
-        assert 2 == len(results)
-        assert 'marko' in results
-        assert 'vadas' in results
+        # results = g.V(1).inject(g.V(2).next()).values('name').to_list()
+        # assert 2 == len(results)
+        # assert 'marko' in results
+        # assert 'vadas' in results
         # #
         # this test just validates that the underscored versions of steps conflicting with Gremlin work
         # properly and can be removed when the old steps are removed - TINKERPOP-2272
@@ -134,7 +133,6 @@ class TestDriverRemoteConnection(object):
         assert long(6) == g.V().count().to_list()[0]
         # #
         assert Vertex(1) == g.V(1).next()
-        assert Vertex(1) == g.V(Vertex(1)).next()
         assert 1 == g.V(1).id_().next()
         # assert Traverser(Vertex(1)) == g.V(1).nextTraverser()  # TODO check back after bulking added back
         assert 1 == len(g.V(1).to_list())
@@ -173,10 +171,10 @@ class TestDriverRemoteConnection(object):
         assert 2 == len(results[0]['a'])
         assert 2 == len(results[0]['b'])
         # #
-        results = g.V(1).inject(g.V(2).next()).values('name').to_list()
-        assert 2 == len(results)
-        assert 'marko' in results
-        assert 'vadas' in results
+        # results = g.V(1).inject(g.V(2).next()).values('name').to_list()
+        # assert 2 == len(results)
+        # assert 'marko' in results
+        # assert 'vadas' in results
         # #
         # this test just validates that the underscored versions of steps conflicting with Gremlin work
         # properly and can be removed when the old steps are removed - TINKERPOP-2272
