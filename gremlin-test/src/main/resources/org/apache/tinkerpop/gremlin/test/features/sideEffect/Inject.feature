@@ -18,23 +18,6 @@
 @StepClassSideEffect @StepInject
 Feature: Step - inject()
 
-#  @GraphComputerVerificationInjectionNotSupported
-#  Scenario: g_VX1X_out_injectXv2X_name
-#    Given the modern graph
-#    And using the parameter vid1 defined as "v[marko].id"
-#    And using the parameter v2 defined as "v[vadas]"
-#    And the traversal of
-#      """
-#      g.V(vid1).out().inject(v2).values("name")
-#      """
-#    When iterated to list
-#    Then the result should be unordered
-#      | result |
-#      | vadas |
-#      | lop   |
-#      | vadas |
-#      | josh  |
-
   @GraphComputerVerificationInjectionNotSupported
   Scenario: g_VX1X_out_name_injectXdanielX_asXaX_mapXlengthX_path
     Given the modern graph
