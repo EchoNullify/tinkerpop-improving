@@ -111,11 +111,8 @@ public class ArgumentVisitorTest {
                 {Object.class, "x", "test", createAntlr(new VariableResolver.DefaultVariableResolver(ElementHelper.asMap("x", "test")))},
                 {Object.class, "x", now, createAntlr(new VariableResolver.DefaultVariableResolver(ElementHelper.asMap("x", now)))},
                 {Object.class, "[1,2,3]", Arrays.asList(1, 2, 3), createAntlr(VariableResolver.NoVariableResolver.instance())},
-                {Object.class, "x", P.eq(100), createAntlr(new VariableResolver.DefaultVariableResolver(ElementHelper.asMap("x", P.eq(100))))},
-                {Vertex.class, "x", new VariableResolverException("x"), createAntlr(VariableResolver.NoVariableResolver.instance())},
-                //{Vertex.class, "x", new VariableResolverException("x"), createAntlr(VariableResolver.NoVariableResolver.instance())},
-                //{Vertex.class, "new Vertex(1i,'person')", new ReferenceVertex(1, "person"), createAntlr(new VariableResolver.DefaultVariableResolver(ElementHelper.asMap("x", Direction.from)))},
-                //{Vertex.class, "x", new ReferenceVertex(1, "person"), createAntlr(new VariableResolver.DirectVariableResolver(ElementHelper.asMap("x", new ReferenceVertex(1, "person"))))},
+                {Object.class, "x", GValue.of("x", P.eq(100)), createAntlr(new VariableResolver.DefaultVariableResolver(ElementHelper.asMap("x", P.eq(100))))},
+                {Object.class, "x", P.eq(100), createAntlr(new VariableResolver.DirectVariableResolver(ElementHelper.asMap("x", P.eq(100))))},
         });
     }
 
