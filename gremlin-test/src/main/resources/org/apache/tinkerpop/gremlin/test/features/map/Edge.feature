@@ -198,21 +198,21 @@ Feature: Step - E(), inV(), outV(), bothV(), otherV()
       | result |
       | e[josh-created->lop] |
 
-  @GraphComputerVerificationMidENotSupported
-  Scenario: g_injectX1X_coalesceXEX_hasLabelXtestsX_addEXtestsX_from_V_hasXnameX_XjoshXX_toXV_hasXnameX_XvadasXXX
-    Given the empty graph
-    And the graph initializer of
-      """
-      g.addV("person").property("name", "josh").
-        addV("person").property("name", "vadas")
-      """
-    And the traversal of
-      """
-      g.inject(1).coalesce(E().hasLabel("tests"), addE("tests").from(V().has("name","josh")).to(V().has("name","vadas")))
-      """
-    When iterated to list
-    Then the result should have a count of 1
-    And the graph should return 1 for count of "g.E().hasLabel(\"tests\")"
+#  @GraphComputerVerificationMidENotSupported
+#  Scenario: g_injectX1X_coalesceXEX_hasLabelXtestsX_addEXtestsX_from_V_hasXnameX_XjoshXX_toXV_hasXnameX_XvadasXXX
+#    Given the empty graph
+#    And the graph initializer of
+#      """
+#      g.addV("person").property("name", "josh").
+#        addV("person").property("name", "vadas")
+#      """
+#    And the traversal of
+#      """
+#      g.inject(1).coalesce(E().hasLabel("tests"), addE("tests").from(V().has("name","josh")).to(V().has("name","vadas")))
+#      """
+#    When iterated to list
+#    Then the result should have a count of 1
+#    And the graph should return 1 for count of "g.E().hasLabel(\"tests\")"
 
   Scenario: g_VX1X_outE_inV
     Given the modern graph

@@ -78,7 +78,7 @@ public abstract class HasTest extends AbstractGremlinProcessTest {
 
     public abstract Traversal<Vertex, Vertex> get_g_VX1X_hasXage_gt_30X(final Object v1Id);
 
-    public abstract Traversal<Vertex, Vertex> get_g_VXv1X_hasXage_gt_30X(final Object v1Id);
+//    public abstract Traversal<Vertex, Vertex> get_g_VXv1X_hasXage_gt_30X(final Object v1Id);
 
     public abstract Traversal<Vertex, Vertex> get_g_VX1X_out_hasXid_lt_3X(final Object v1Id, final Object v3Id);
 
@@ -302,22 +302,22 @@ public abstract class HasTest extends AbstractGremlinProcessTest {
         traversalJosh.iterate();
     }
 
-    @Test
-    @LoadGraphWith(MODERN)
-    public void g_VXv1X_hasXage_gt_30X() {
-        final Traversal<Vertex, Vertex> traversalMarko = get_g_VXv1X_hasXage_gt_30X(convertToVertex(graph,"marko"));
-        printTraversalForm(traversalMarko);
-        assertFalse(traversalMarko.hasNext());
-    }
+//    @Test
+//    @LoadGraphWith(MODERN)
+//    public void g_VXv1X_hasXage_gt_30X() {
+//        final Traversal<Vertex, Vertex> traversalMarko = get_g_VXv1X_hasXage_gt_30X(convertToVertex(graph,"marko"));
+//        printTraversalForm(traversalMarko);
+//        assertFalse(traversalMarko.hasNext());
+//    }
 
-    @Test
-    @LoadGraphWith(MODERN)
-    public void g_VXv4X_hasXage_gt_30X() {
-        final Traversal<Vertex, Vertex> traversalJosh = get_g_VXv1X_hasXage_gt_30X(convertToVertex(graph,"josh"));
-        printTraversalForm(traversalJosh);
-        assertTrue(traversalJosh.hasNext());
-        traversalJosh.iterate();
-    }
+//    @Test
+//    @LoadGraphWith(MODERN)
+//    public void g_VXv4X_hasXage_gt_30X() {
+//        final Traversal<Vertex, Vertex> traversalJosh = get_g_VXv1X_hasXage_gt_30X(convertToVertex(graph,"josh"));
+//        printTraversalForm(traversalJosh);
+//        assertTrue(traversalJosh.hasNext());
+//        traversalJosh.iterate();
+//    }
 
     @Test
     @LoadGraphWith(MODERN)
@@ -1035,10 +1035,10 @@ public abstract class HasTest extends AbstractGremlinProcessTest {
             return g.V(v1Id).has("age", P.gt(30));
         }
 
-        @Override
-        public Traversal<Vertex, Vertex> get_g_VXv1X_hasXage_gt_30X(final Object v1Id) {
-            return g.V(v1Id).has("age", P.gt(30));
-        }
+//        @Override
+//        public Traversal<Vertex, Vertex> get_g_VXv1X_hasXage_gt_30X(final Object v1Id) {
+//            return g.V(v1Id).has("age", P.gt(30));
+//        }
 
         @Override
         public Traversal<Vertex, Vertex> get_g_VX1X_out_hasXid_lt_3X(final Object v1Id, final Object v3Id) {

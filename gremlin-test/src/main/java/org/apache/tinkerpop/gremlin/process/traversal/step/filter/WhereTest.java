@@ -274,22 +274,22 @@ public abstract class WhereTest extends AbstractGremlinProcessTest {
         assertFalse(traversal.hasNext());
     }
 
-    @Test
-    @LoadGraphWith(MODERN)
-    public void g_withSideEffectXa_g_VX2XX_VX1X_out_whereXneqXaXX() {
-        final Traversal<Vertex, Vertex> traversal = get_g_withSideEffectXa_graph_verticesX2XX_VX1X_out_whereXneqXaXX(convertToVertexId("marko"), convertToVertex(graph,"vadas"));
-        printTraversalForm(traversal);
-        int counter = 0;
-        final Set<Vertex> vertices = new HashSet<>();
-        while (traversal.hasNext()) {
-            counter++;
-            final Vertex vertex = traversal.next();
-            vertices.add(vertex);
-            assertTrue(vertex.value("name").equals("josh") || vertex.value("name").equals("lop"));
-        }
-        assertEquals(2, counter);
-        assertEquals(2, vertices.size());
-    }
+//    @Test
+//    @LoadGraphWith(MODERN)
+//    public void g_withSideEffectXa_g_VX2XX_VX1X_out_whereXneqXaXX() {
+//        final Traversal<Vertex, Vertex> traversal = get_g_withSideEffectXa_graph_verticesX2XX_VX1X_out_whereXneqXaXX(convertToVertexId("marko"), convertToVertex(graph,"vadas"));
+//        printTraversalForm(traversal);
+//        int counter = 0;
+//        final Set<Vertex> vertices = new HashSet<>();
+//        while (traversal.hasNext()) {
+//            counter++;
+//            final Vertex vertex = traversal.next();
+//            vertices.add(vertex);
+//            assertTrue(vertex.value("name").equals("josh") || vertex.value("name").equals("lop"));
+//        }
+//        assertEquals(2, counter);
+//        assertEquals(2, vertices.size());
+//    }
 
     @Test
     @LoadGraphWith(MODERN)

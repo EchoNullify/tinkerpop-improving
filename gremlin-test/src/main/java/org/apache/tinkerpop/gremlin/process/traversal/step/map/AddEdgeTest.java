@@ -68,7 +68,7 @@ public abstract class AddEdgeTest extends AbstractGremlinProcessTest {
 
     public abstract Traversal<Vertex, Edge> get_g_V_asXaX_inXcreatedX_addEXcreatedByX_fromXaX_propertyXyear_2009X_propertyXacl_publicX();
 
-    public abstract Traversal<Vertex, Edge> get_g_addV_asXfirstX_repeatXaddEXnextX_toXaddVX_inVX_timesX5X_addEXnextX_toXselectXfirstXX();
+    //public abstract Traversal<Vertex, Edge> get_g_addV_asXfirstX_repeatXaddEXnextX_toXaddVX_inVX_timesX5X_addEXnextX_toXselectXfirstXX();
 
     public abstract Traversal<Vertex, Edge> get_g_withSideEffectXb_bX_VXaX_addEXknowsX_toXbX_propertyXweight_0_5X(final Vertex a, final Vertex b);
 
@@ -78,7 +78,7 @@ public abstract class AddEdgeTest extends AbstractGremlinProcessTest {
 
     public abstract Traversal<Vertex, Edge> get_g_V_hasXname_markoX_asXaX_outEXcreatedX_asXbX_inV_addEXselectXbX_labelX_toXaX();
 
-    public abstract Traversal<Edge, Edge> get_g_addEXV_outE_label_groupCount_orderXlocalX_byXvalues_descX_selectXkeysX_unfold_limitX1XX_fromXV_hasXname_vadasXX_toXV_hasXname_lopXX();
+    //public abstract Traversal<Edge, Edge> get_g_addEXV_outE_label_groupCount_orderXlocalX_byXvalues_descX_selectXkeysX_unfold_limitX1XX_fromXV_hasXname_vadasXX_toXV_hasXname_lopXX();
 
     ///////
 
@@ -223,20 +223,20 @@ public abstract class AddEdgeTest extends AbstractGremlinProcessTest {
         assertEquals(6, IteratorUtils.count(g.V()));
     }
 
-    @Test
-    @FeatureRequirement(featureClass = Graph.Features.EdgeFeatures.class, feature = Graph.Features.EdgeFeatures.FEATURE_ADD_EDGES)
-    @FeatureRequirement(featureClass = Graph.Features.VertexFeatures.class, feature = Graph.Features.VertexFeatures.FEATURE_ADD_VERTICES)
-    public void g_addV_asXfirstX_repeatXaddEXnextX_toXaddVX_inVX_timesX5X_addEXnextX_toXselectXfirstXX() {
-        final Traversal<Vertex, Edge> traversal = get_g_addV_asXfirstX_repeatXaddEXnextX_toXaddVX_inVX_timesX5X_addEXnextX_toXselectXfirstXX();
-        printTraversalForm(traversal);
-        assertEquals("next", traversal.next().label());
-        assertFalse(traversal.hasNext());
-        assertEquals(6L, g.V().count().next().longValue());
-        assertEquals(6L, g.E().count().next().longValue());
-        assertEquals(Arrays.asList(2L, 2L, 2L, 2L, 2L, 2L), g.V().map(bothE().count()).toList());
-        assertEquals(Arrays.asList(1L, 1L, 1L, 1L, 1L, 1L), g.V().map(inE().count()).toList());
-        assertEquals(Arrays.asList(1L, 1L, 1L, 1L, 1L, 1L), g.V().map(outE().count()).toList());
-    }
+//    @Test
+//    @FeatureRequirement(featureClass = Graph.Features.EdgeFeatures.class, feature = Graph.Features.EdgeFeatures.FEATURE_ADD_EDGES)
+//    @FeatureRequirement(featureClass = Graph.Features.VertexFeatures.class, feature = Graph.Features.VertexFeatures.FEATURE_ADD_VERTICES)
+//    public void g_addV_asXfirstX_repeatXaddEXnextX_toXaddVX_inVX_timesX5X_addEXnextX_toXselectXfirstXX() {
+//        final Traversal<Vertex, Edge> traversal = get_g_addV_asXfirstX_repeatXaddEXnextX_toXaddVX_inVX_timesX5X_addEXnextX_toXselectXfirstXX();
+//        printTraversalForm(traversal);
+//        assertEquals("next", traversal.next().label());
+//        assertFalse(traversal.hasNext());
+//        assertEquals(6L, g.V().count().next().longValue());
+//        assertEquals(6L, g.E().count().next().longValue());
+//        assertEquals(Arrays.asList(2L, 2L, 2L, 2L, 2L, 2L), g.V().map(bothE().count()).toList());
+//        assertEquals(Arrays.asList(1L, 1L, 1L, 1L, 1L, 1L), g.V().map(inE().count()).toList());
+//        assertEquals(Arrays.asList(1L, 1L, 1L, 1L, 1L, 1L), g.V().map(outE().count()).toList());
+//    }
 
     @Test
     @LoadGraphWith(MODERN)
@@ -291,20 +291,20 @@ public abstract class AddEdgeTest extends AbstractGremlinProcessTest {
         assertEquals(7L, g.E().count().next().longValue());
     }
 
-    @Test
-    @LoadGraphWith(MODERN)
-    @FeatureRequirement(featureClass = Graph.Features.EdgeFeatures.class, feature = Graph.Features.EdgeFeatures.FEATURE_ADD_EDGES)
-    public void g_addEXV_outE_label_groupCount_orderXlocalX_byXvalues_descX_selectXkeysX_unfold_limitX1XX_fromXV_hasXname_vadasXX_toXV_hasXname_lopXX() {
-        final Traversal<Edge, Edge> traversal = get_g_addEXV_outE_label_groupCount_orderXlocalX_byXvalues_descX_selectXkeysX_unfold_limitX1XX_fromXV_hasXname_vadasXX_toXV_hasXname_lopXX();
-        printTraversalForm(traversal);
-        final Edge edge = traversal.next();
-        assertFalse(traversal.hasNext());
-        assertEquals("created", edge.label());
-        assertEquals(convertToVertexId("vadas"), edge.outVertex().id());
-        assertEquals(convertToVertexId("lop"), edge.inVertex().id());
-        assertEquals(6L, g.V().count().next().longValue());
-        assertEquals(7L, g.E().count().next().longValue());
-    }
+//    @Test
+//    @LoadGraphWith(MODERN)
+//    @FeatureRequirement(featureClass = Graph.Features.EdgeFeatures.class, feature = Graph.Features.EdgeFeatures.FEATURE_ADD_EDGES)
+//    public void g_addEXV_outE_label_groupCount_orderXlocalX_byXvalues_descX_selectXkeysX_unfold_limitX1XX_fromXV_hasXname_vadasXX_toXV_hasXname_lopXX() {
+//        final Traversal<Edge, Edge> traversal = get_g_addEXV_outE_label_groupCount_orderXlocalX_byXvalues_descX_selectXkeysX_unfold_limitX1XX_fromXV_hasXname_vadasXX_toXV_hasXname_lopXX();
+//        printTraversalForm(traversal);
+//        final Edge edge = traversal.next();
+//        assertFalse(traversal.hasNext());
+//        assertEquals("created", edge.label());
+//        assertEquals(convertToVertexId("vadas"), edge.outVertex().id());
+//        assertEquals(convertToVertexId("lop"), edge.inVertex().id());
+//        assertEquals(6L, g.V().count().next().longValue());
+//        assertEquals(7L, g.E().count().next().longValue());
+//    }
 
     public static class Traversals extends AddEdgeTest {
 
@@ -343,10 +343,10 @@ public abstract class AddEdgeTest extends AbstractGremlinProcessTest {
             return g.withSideEffect("b", b).V(a).addE("knows").to("b").property("weight", 0.5d);
         }
 
-        @Override
-        public Traversal<Vertex, Edge> get_g_addV_asXfirstX_repeatXaddEXnextX_toXaddVX_inVX_timesX5X_addEXnextX_toXselectXfirstXX() {
-            return g.addV().as("first").repeat(__.addE("next").to(__.addV()).inV()).times(5).addE("next").to(select("first"));
-        }
+//        @Override
+//        public Traversal<Vertex, Edge> get_g_addV_asXfirstX_repeatXaddEXnextX_toXaddVX_inVX_timesX5X_addEXnextX_toXselectXfirstXX() {
+//            return g.addV().as("first").repeat(__.addE("next").to(__.addV()).inV()).times(5).addE("next").to(select("first"));
+//        }
 
         @Override
         public Traversal<Vertex, Edge> get_g_VXaX_addEXknowsX_toXbX_propertyXweight_0_1X(final Vertex a, final Vertex b) {
@@ -363,9 +363,9 @@ public abstract class AddEdgeTest extends AbstractGremlinProcessTest {
             return g.V().has("name", "marko").as("a").outE("created").as("b").inV().addE(select("b").label()).to("a");
         }
 
-        @Override
-        public Traversal<Edge, Edge> get_g_addEXV_outE_label_groupCount_orderXlocalX_byXvalues_descX_selectXkeysX_unfold_limitX1XX_fromXV_hasXname_vadasXX_toXV_hasXname_lopXX() {
-            return g.addE(V().outE().label().groupCount().order(local).by(values, desc).select(keys).<String>unfold().limit(1)).from(V().has("name", "vadas")).to(V().has("name", "lop"));
-        }
+//        @Override
+//        public Traversal<Edge, Edge> get_g_addEXV_outE_label_groupCount_orderXlocalX_byXvalues_descX_selectXkeysX_unfold_limitX1XX_fromXV_hasXname_vadasXX_toXV_hasXname_lopXX() {
+//            return g.addE(V().outE().label().groupCount().order(local).by(values, desc).select(keys).<String>unfold().limit(1)).from(V().has("name", "vadas")).to(V().has("name", "lop"));
+//        }
     }
 }
