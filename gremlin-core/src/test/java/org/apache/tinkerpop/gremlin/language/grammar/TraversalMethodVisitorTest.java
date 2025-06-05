@@ -69,8 +69,8 @@ public class TraversalMethodVisitorTest {
     }
     
     private void compare(Object expected, Object actual) {
-        assertEquals(((DefaultGraphTraversal) expected).asAdmin().getBytecode(),
-                ((DefaultGraphTraversal) actual).asAdmin().getBytecode());
+        assertEquals(((DefaultGraphTraversal) expected).asAdmin().getGremlinLang(),
+                ((DefaultGraphTraversal) actual).asAdmin().getGremlinLang());
     }
 
     @Test
@@ -163,7 +163,7 @@ public class TraversalMethodVisitorTest {
 
     @Test
     public void shouldParseTraversalMethod_both_MultiString() throws Exception {
-        compare(g.V().both(new String[]{"a", "b"}), eval("g.V().both('a', 'b')"));
+        compare(g.V().both("a", "b"), eval("g.V().both('a', 'b')"));
     }
 
     @Test
@@ -1300,9 +1300,9 @@ public class TraversalMethodVisitorTest {
     }
 
     @Test
-    public void shouldParseTraversalMethod_none_somethingAfter() throws Exception {
-        compare(g.V().none().path(), eval("g.V().none().path()"));
-        compare(g.V().none().E(), eval("g.V().none().E()"));
-        compare(g.V().none().none(), eval("g.V().none().none()"));
+    public void shouldParseTraversalMethod_discard_somethingAfter() throws Exception {
+        compare(g.V().discard().path(), eval("g.V().discard().path()"));
+        compare(g.V().discard().E(), eval("g.V().discard().E()"));
+        compare(g.V().discard().discard(), eval("g.V().discard().discard()"));
     }
 }

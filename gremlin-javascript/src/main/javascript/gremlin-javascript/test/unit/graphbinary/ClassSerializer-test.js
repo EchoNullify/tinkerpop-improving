@@ -17,8 +17,6 @@
  *  under the License.
  */
 
-'use strict';
-
 const utils = require('./utils');
 const assert = require('assert');
 const { classSerializer } = require('../../../lib/structure/io/binary/GraphBinary');

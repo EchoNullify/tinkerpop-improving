@@ -149,7 +149,6 @@ public class GraphSONTypeDeserializer extends TypeDeserializerBase {
                             localCopy.copyCurrentStructure(jsonParser);
                         }
                         valueDetected = true;
-                        continue;
                     }
                 }
 
@@ -196,7 +195,7 @@ public class GraphSONTypeDeserializer extends TypeDeserializerBase {
                 }
             }
         } catch (Exception e) {
-            throw deserializationContext.mappingException("Could not deserialize the JSON value as required. Nested exception: " + e.toString());
+            throw deserializationContext.mappingException("Could not deserialize the JSON value as required. Nested exception: " + e);
         }
 
         // Type pattern wasn't detected, however,

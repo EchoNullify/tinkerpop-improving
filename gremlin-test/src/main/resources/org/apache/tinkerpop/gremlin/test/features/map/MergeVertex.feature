@@ -201,6 +201,22 @@ Feature: Step - mergeV()
     Then the result should have a count of 1
     And the graph should return 1 for count of "g.V()"
 
+  @GremlinGroovyNotSupported
+  Scenario: g_mergeVXnullvarX
+    Given the empty graph
+    And the graph initializer of
+      """
+      g.addV("person").property("name", "marko").property("age", 29)
+      """
+    And using the parameter xx1 defined as "null"
+    And the traversal of
+      """
+      g.mergeV(xx1)
+      """
+    When iterated to list
+    Then the result should have a count of 1
+    And the graph should return 1 for count of "g.V()"
+
   Scenario: g_V_mergeVXnullX
     Given the empty graph
     And the graph initializer of
@@ -570,7 +586,9 @@ Feature: Step - mergeV()
           option(Merge.onMatch, __.sideEffect(__.properties("age").drop()).select("m"))
       """
     When iterated to list
-    Then the traversal will raise an error with message containing text of "The incoming traverser for MergeVertexStep cannot be an Element"
+    Then the result should have a count of 1
+    And the graph should return 1 for count of "g.V().has(\"person\",\"name\",\"marko\").has(\"age\", 19)"
+    And the graph should return 1 for count of "g.V().has(\"person\",\"name\",\"marko\").properties(\"age\")"
 
   # onCreate inheritance from merge
   @UserSuppliedVertexIds
@@ -935,10 +953,10 @@ Feature: Step - mergeV()
     And the traversal of
       """
       g.inject(xx1, xx1, xx2).
-        fold().
-        mergeV(__.limit(Scope.local,1)).
-          option(Merge.onCreate, __.range(Scope.local, 1, 2)).
-          option(Merge.onMatch, __.tail(Scope.local))
+        fold().as("m").
+        mergeV(__.select("m").limit(Scope.local,1)).
+          option(Merge.onCreate, __.select("m").range(Scope.local, 1, 2)).
+          option(Merge.onMatch, __.select("m").tail(Scope.local))
       """
     When iterated to list
     Then the result should have a count of 1
@@ -956,10 +974,10 @@ Feature: Step - mergeV()
     And the traversal of
       """
       g.inject(xx1, xx1, xx2).
-        fold().
-        mergeV(__.limit(Scope.local,1)).
-          option(Merge.onCreate, __.range(Scope.local, 1, 2)).
-          option(Merge.onMatch, __.tail(Scope.local))
+        fold().as("m").
+        mergeV(__.select("m").limit(Scope.local,1)).
+          option(Merge.onCreate, __.select("m").range(Scope.local, 1, 2)).
+          option(Merge.onMatch, __.select("m").tail(Scope.local))
       """
     When iterated to list
     Then the result should have a count of 1

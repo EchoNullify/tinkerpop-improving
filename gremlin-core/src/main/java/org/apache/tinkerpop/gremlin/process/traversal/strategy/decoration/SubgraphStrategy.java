@@ -189,7 +189,7 @@ public final class SubgraphStrategy extends AbstractTraversalStrategy<TraversalS
                 continue;
 
             if (edgeCriterion != null) {
-                final VertexStep<Edge> someEStep = new VertexStep<>(traversal, Edge.class, step.getDirection(), step.getEdgeLabels());
+                final VertexStep<Edge> someEStep = new VertexStep<>(traversal, Edge.class, step.getDirection(), step.getEdgeLabelsGValue());
                 final Step<Edge, Vertex> someVStep = step.getDirection() == Direction.BOTH ?
                         new EdgeOtherVertexStep(traversal) :
                         new EdgeVertexStep(traversal, step.getDirection().opposite());

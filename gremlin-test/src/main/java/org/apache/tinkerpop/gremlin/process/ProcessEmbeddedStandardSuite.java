@@ -28,11 +28,8 @@ import org.apache.tinkerpop.gremlin.process.traversal.step.map.MatchTest;
 import org.apache.tinkerpop.gremlin.process.traversal.step.map.ProfileTest;
 import org.apache.tinkerpop.gremlin.process.traversal.step.map.WriteTest;
 import org.apache.tinkerpop.gremlin.process.traversal.step.sideEffect.ExplainTest;
-import org.apache.tinkerpop.gremlin.process.traversal.step.sideEffect.SubgraphTest;
-import org.apache.tinkerpop.gremlin.process.traversal.step.sideEffect.TreeTest;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.decoration.ElementIdStrategyProcessTest;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.decoration.EventStrategyProcessTest;
-import org.apache.tinkerpop.gremlin.process.traversal.strategy.decoration.TranslationStrategyProcessTest;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.optimization.EarlyLimitStrategyProcessTest;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.optimization.IncidentToAdjacentStrategyProcessTest;
 import org.apache.tinkerpop.gremlin.structure.Graph;
@@ -63,9 +60,6 @@ public class ProcessEmbeddedStandardSuite extends AbstractGremlinSuite {
             // compliance
             CoreTraversalTest.class,
             TraversalInterruptionTest.class,
-
-            // creations
-            TranslationStrategyProcessTest.class,
 
             // decorations
             ElementIdStrategyProcessTest.class,

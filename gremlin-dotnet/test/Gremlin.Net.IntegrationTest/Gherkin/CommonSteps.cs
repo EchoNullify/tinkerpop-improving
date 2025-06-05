@@ -115,13 +115,6 @@ namespace Gremlin.Net.IntegrationTest.Gherkin
             _parameters.Add(name, parsedValue);
         }
 
-        [Given("using the parameter (\\w+) of P.(\\w+)\\(\"(.*)\"\\)")]
-        public void UsingParameterP(string name, string pval, string value)
-        {
-            var parsedValue = ParseValue(value.Replace("\\\"", "\""), _graphName!);
-            _parameters.Add(name, new P(pval, parsedValue));
-        }
-
         [Given("the traversal of")]
         public void TranslateTraversal(string traversalText)
         {
@@ -229,13 +222,13 @@ namespace Gremlin.Net.IntegrationTest.Gherkin
 
             switch (comparison) {
                 case "containing":
-                    Assert.Contains(expectedMessage, _error.Message);
+                    Assert.Contains(expectedMessage.ToUpper(), _error.Message.ToUpper());
                     break;
                 case "starting":
-                    Assert.StartsWith(expectedMessage, _error.Message);
+                    Assert.StartsWith(expectedMessage.ToUpper(), _error.Message.ToUpper());
                     break;
                 case "ending":
-                    Assert.EndsWith(expectedMessage, _error.Message);
+                    Assert.EndsWith(expectedMessage.ToUpper(), _error.Message.ToUpper());
                     break;
                 default:
                     throw new NotSupportedException(

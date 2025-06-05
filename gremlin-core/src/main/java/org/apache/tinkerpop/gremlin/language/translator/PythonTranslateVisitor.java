@@ -94,28 +94,6 @@ public class PythonTranslateVisitor extends AbstractTranslateVisitor {
     }
 
     @Override
-    public Void visitTraversalSourceSelfMethod_withoutStrategies(final GremlinParser.TraversalSourceSelfMethod_withoutStrategiesContext ctx) {
-        sb.append(SymbolHelper.toPython(ctx.getChild(0).getText())).append("(*[");
-        visit(ctx.classType());
-
-        if (ctx.classTypeList() != null && ctx.classTypeList().getChildCount() > 0) {
-            sb.append(", ");
-            visit(ctx.classTypeList());
-        }
-
-        sb.append("])");
-        return null;
-    }
-
-    @Override
-    public Void visitClassType(final GremlinParser.ClassTypeContext ctx) {
-        final Optional<? extends Class<? extends TraversalStrategy>> strategy = TraversalStrategies.GlobalCache.getRegisteredStrategyClass(ctx.getText());
-        final String fqcn = strategy.map(Class::getName).orElse(ctx.getText());
-        sb.append("GremlinType('").append(fqcn).append("')");
-        return null;
-    }
-
-    @Override
     public Void visitGenericMapLiteral(final GremlinParser.GenericMapLiteralContext ctx) {
         sb.append("{ ");
         for (int i = 0; i < ctx.mapEntry().size(); i++) {

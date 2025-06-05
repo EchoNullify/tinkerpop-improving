@@ -54,10 +54,10 @@ radishGremlinFile.withWriter('UTF-8') { Writer writer ->
     writer.writeLine("//********************************************************************************\n\n")
 
     writer.writeLine(
-                    'const uuid = require(\'uuid\');\n' +
-                    'const graphTraversalModule = require(\'../../lib/process/graph-traversal\');\n' +
-                    'const traversalModule = require(\'../../lib/process/traversal\');\n' +
-                    'const { TraversalStrategies, VertexProgramStrategy, OptionsStrategy, PartitionStrategy, \n' +
+                    'import * as graphTraversalModule from \'../../lib/process/graph-traversal.js\';\n' +
+                    'import * as traversalModule from \'../../lib/process/traversal.js\';\n' +
+                    'import * as uuid from \'uuid\';\n' +
+                    'import { TraversalStrategies, VertexProgramStrategy, OptionsStrategy, PartitionStrategy, \n' +
                     '        ReadOnlyStrategy, GraphFilterStrategy, SeedStrategy, SubgraphStrategy, ProductiveByStrategy, \n' +
                     '        LambdaRestrictionStrategy, StandardVerificationStrategy, VertexProgramRestrictionStrategy, \n' +
                     '        ComputerVerificationStrategy, MessagePassingReductionStrategy, ProfileStrategy, InlineFilterStrategy, \n' +
@@ -66,7 +66,7 @@ radishGremlinFile.withWriter('UTF-8') { Writer writer ->
                     '        AdjacentToIncidentStrategy, ReservedKeysVerificationStrategy, RepeatUnrollStrategy, \n' +
                     '        PathRetractionStrategy, PathProcessorStrategy, OrderLimitStrategy, MatchPredicateStrategy, \n' +
                     '        LazyBarrierStrategy, EarlyLimitStrategy, IncidentToAdjacentStrategy, IdentityRemovalStrategy, \n' +
-                    '        HaltedTraverserStrategy, FilterRankingStrategy } = require(\'../../lib/process/traversal-strategy\');\n' +
+                    '        HaltedTraverserStrategy, FilterRankingStrategy } from \'../../lib/process/traversal-strategy.js\';\n' +
                     'const __ = graphTraversalModule.statics;\n' +
                     'const Barrier = traversalModule.barrier\n' +
                     'const Cardinality = traversalModule.cardinality\n' +
@@ -125,7 +125,7 @@ radishGremlinFile.withWriter('UTF-8') { Writer writer ->
     }
     writer.writeLine('}\n')
 
-    writer.writeLine('exports.gremlin = gremlins')
+    writer.writeLine('export const gremlin = gremlins')
 }
 
 

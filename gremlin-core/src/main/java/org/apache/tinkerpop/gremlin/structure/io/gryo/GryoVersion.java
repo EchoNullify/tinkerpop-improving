@@ -18,6 +18,7 @@
  */
 package org.apache.tinkerpop.gremlin.structure.io.gryo;
 
+import org.apache.commons.collections4.map.ReferenceMap;
 import org.apache.tinkerpop.gremlin.process.computer.GraphFilter;
 import org.apache.tinkerpop.gremlin.process.computer.MapReduce;
 import org.apache.tinkerpop.gremlin.process.computer.traversal.strategy.decoration.VertexProgramStrategy;
@@ -25,7 +26,6 @@ import org.apache.tinkerpop.gremlin.process.computer.traversal.strategy.optimiza
 import org.apache.tinkerpop.gremlin.process.computer.util.ComputerGraph;
 import org.apache.tinkerpop.gremlin.process.computer.util.MapMemory;
 import org.apache.tinkerpop.gremlin.process.remote.traversal.DefaultRemoteTraverser;
-import org.apache.tinkerpop.gremlin.process.traversal.Bytecode;
 import org.apache.tinkerpop.gremlin.process.traversal.Contains;
 import org.apache.tinkerpop.gremlin.process.traversal.DT;
 import org.apache.tinkerpop.gremlin.process.traversal.Merge;
@@ -39,6 +39,8 @@ import org.apache.tinkerpop.gremlin.process.traversal.SackFunctions;
 import org.apache.tinkerpop.gremlin.process.traversal.Scope;
 import org.apache.tinkerpop.gremlin.process.traversal.Text;
 import org.apache.tinkerpop.gremlin.process.traversal.TextP;
+import org.apache.tinkerpop.gremlin.process.traversal.step.GType;
+import org.apache.tinkerpop.gremlin.process.traversal.step.GValue;
 import org.apache.tinkerpop.gremlin.process.traversal.step.filter.RangeGlobalStep;
 import org.apache.tinkerpop.gremlin.process.traversal.step.map.FoldStep;
 import org.apache.tinkerpop.gremlin.process.traversal.step.map.GroupCountStep;
@@ -60,6 +62,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.strategy.decoration.Subgra
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.finalization.MatchAlgorithmStrategy;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.optimization.AdjacentToIncidentStrategy;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.optimization.ByModulatorOptimizationStrategy;
+import org.apache.tinkerpop.gremlin.process.traversal.strategy.optimization.CountStrategy;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.optimization.EarlyLimitStrategy;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.optimization.FilterRankingStrategy;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.optimization.IdentityRemovalStrategy;
@@ -70,29 +73,29 @@ import org.apache.tinkerpop.gremlin.process.traversal.strategy.optimization.Matc
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.optimization.OrderLimitStrategy;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.optimization.PathProcessorStrategy;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.optimization.PathRetractionStrategy;
-import org.apache.tinkerpop.gremlin.process.traversal.strategy.optimization.CountStrategy;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.optimization.ProductiveByStrategy;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.optimization.RepeatUnrollStrategy;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.verification.EdgeLabelVerificationStrategy;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.verification.LambdaRestrictionStrategy;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.verification.ReadOnlyStrategy;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.verification.ReservedKeysVerificationStrategy;
-import org.apache.tinkerpop.gremlin.process.traversal.traverser.B_LP_O_P_S_SE_SL_Traverser;
 import org.apache.tinkerpop.gremlin.process.traversal.traverser.B_LP_NL_O_P_S_SE_SL_Traverser;
-import org.apache.tinkerpop.gremlin.process.traversal.traverser.B_LP_O_S_SE_SL_Traverser;
 import org.apache.tinkerpop.gremlin.process.traversal.traverser.B_LP_NL_O_S_SE_SL_Traverser;
-import org.apache.tinkerpop.gremlin.process.traversal.traverser.B_O_S_SE_SL_Traverser;
+import org.apache.tinkerpop.gremlin.process.traversal.traverser.B_LP_O_P_S_SE_SL_Traverser;
+import org.apache.tinkerpop.gremlin.process.traversal.traverser.B_LP_O_S_SE_SL_Traverser;
 import org.apache.tinkerpop.gremlin.process.traversal.traverser.B_NL_O_S_SE_SL_Traverser;
+import org.apache.tinkerpop.gremlin.process.traversal.traverser.B_O_S_SE_SL_Traverser;
 import org.apache.tinkerpop.gremlin.process.traversal.traverser.B_O_Traverser;
-import org.apache.tinkerpop.gremlin.process.traversal.traverser.LP_O_OB_P_S_SE_SL_Traverser;
-import org.apache.tinkerpop.gremlin.process.traversal.traverser.LP_NL_O_OB_S_SE_SL_Traverser;
-import org.apache.tinkerpop.gremlin.process.traversal.traverser.LP_O_OB_S_SE_SL_Traverser;
 import org.apache.tinkerpop.gremlin.process.traversal.traverser.LP_NL_O_OB_P_S_SE_SL_Traverser;
-import org.apache.tinkerpop.gremlin.process.traversal.traverser.O_OB_S_SE_SL_Traverser;
+import org.apache.tinkerpop.gremlin.process.traversal.traverser.LP_NL_O_OB_S_SE_SL_Traverser;
+import org.apache.tinkerpop.gremlin.process.traversal.traverser.LP_O_OB_P_S_SE_SL_Traverser;
+import org.apache.tinkerpop.gremlin.process.traversal.traverser.LP_O_OB_S_SE_SL_Traverser;
 import org.apache.tinkerpop.gremlin.process.traversal.traverser.NL_O_OB_S_SE_SL_Traverser;
+import org.apache.tinkerpop.gremlin.process.traversal.traverser.O_OB_S_SE_SL_Traverser;
 import org.apache.tinkerpop.gremlin.process.traversal.traverser.O_Traverser;
 import org.apache.tinkerpop.gremlin.process.traversal.traverser.ProjectedTraverser;
 import org.apache.tinkerpop.gremlin.process.traversal.traverser.util.IndexedTraverserSet;
+import org.apache.tinkerpop.gremlin.process.traversal.traverser.util.LabelledCounter;
 import org.apache.tinkerpop.gremlin.process.traversal.traverser.util.TraverserSet;
 import org.apache.tinkerpop.gremlin.process.traversal.util.DefaultTraversalMetrics;
 import org.apache.tinkerpop.gremlin.process.traversal.util.ImmutableMetrics;
@@ -127,8 +130,6 @@ import org.apache.tinkerpop.gremlin.util.function.MultiComparator;
 import org.apache.tinkerpop.shaded.kryo.ClassResolver;
 import org.apache.tinkerpop.shaded.kryo.KryoSerializable;
 import org.apache.tinkerpop.shaded.kryo.serializers.JavaSerializer;
-import org.apache.tinkerpop.gremlin.process.traversal.traverser.util.LabelledCounter;
-import org.apache.commons.collections.map.ReferenceMap;
 import org.javatuples.Pair;
 import org.javatuples.Triplet;
 
@@ -327,12 +328,13 @@ public enum GryoVersion {
             add(GryoTypeReg.of(ProjectedTraverser.class, 168));
             add(GryoTypeReg.of(DefaultRemoteTraverser.class, 123, new GryoSerializersV3.DefaultRemoteTraverserSerializer()));
 
-            add(GryoTypeReg.of(Bytecode.class, 122, new GryoSerializersV3.BytecodeSerializer()));
+            // 122 was Bytecode until it was removed for 4.x
+            // 126 was Bytecode.Binding until it was removed 4.x
+
             add(GryoTypeReg.of(P.class, 124, new GryoSerializersV3.PSerializer()));
             add(GryoTypeReg.of(TextP.class, 186, new GryoSerializersV3.TextPSerializer()));
             add(GryoTypeReg.of(Text.RegexPredicate.class, 197));
             add(GryoTypeReg.of(Lambda.class, 125, new GryoSerializersV3.LambdaSerializer()));
-            add(GryoTypeReg.of(Bytecode.Binding.class, 126, new GryoSerializersV3.BindingSerializer()));
             add(GryoTypeReg.of(Order.class, 127));
             add(GryoTypeReg.of(Scope.class, 128));
             add(GryoTypeReg.of(VertexProperty.Cardinality.class, 131));
@@ -427,6 +429,9 @@ public enum GryoVersion {
             add(GryoTypeReg.of(LabelledCounter.class, 180));
             add(GryoTypeReg.of(Stack.class, 181));
             add(GryoTypeReg.of(ReferenceMap.class, 182));
+
+            add(GryoTypeReg.of(GValue.class, 199, new JavaSerializer()));
+            add(GryoTypeReg.of(GType.class, 200, new JavaSerializer()));        // ***LAST ID***
 
             // placeholder serializers for classes that don't live here in core. this will allow them to be used if
             // present  or ignored if the class isn't available. either way the registration numbers are held as
@@ -535,12 +540,13 @@ public enum GryoVersion {
             add(GryoTypeReg.of(ProjectedTraverser.class, 164));
             add(GryoTypeReg.of(DefaultRemoteTraverser.class, 123, new GryoSerializersV1.DefaultRemoteTraverserSerializer()));
 
-            add(GryoTypeReg.of(Bytecode.class, 122, new GryoSerializersV1.BytecodeSerializer()));
+            // 122 was Bytecode until it was removed for 4.x
+            // 126 was Bytecode.Binding until it was removed 4.x
+
             add(GryoTypeReg.of(P.class, 124, new GryoSerializersV1.PSerializer()));
             add(GryoTypeReg.of(TextP.class, 186, new GryoSerializersV1.TextPSerializer()));
             add(GryoTypeReg.of(Text.RegexPredicate.class, 197));
             add(GryoTypeReg.of(Lambda.class, 125, new GryoSerializersV1.LambdaSerializer()));
-            add(GryoTypeReg.of(Bytecode.Binding.class, 126, new GryoSerializersV1.BindingSerializer()));
             add(GryoTypeReg.of(Order.class, 127));
             add(GryoTypeReg.of(Scope.class, 128));
             add(GryoTypeReg.of(VertexProperty.Cardinality.class, 131));
@@ -639,6 +645,9 @@ public enum GryoVersion {
             add(GryoTypeReg.of(LabelledCounter.class, 180));
             add(GryoTypeReg.of(Stack.class, 181));
             add(GryoTypeReg.of(ReferenceMap.class, 182));
+
+            add(GryoTypeReg.of(GValue.class, 199, new JavaSerializer()));
+            add(GryoTypeReg.of(GType.class, 200, new JavaSerializer()));        // ***LAST ID***
         }};
     }
 

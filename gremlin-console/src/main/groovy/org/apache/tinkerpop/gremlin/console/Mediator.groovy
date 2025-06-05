@@ -18,8 +18,6 @@
  */
 package org.apache.tinkerpop.gremlin.console
 
-import org.apache.tinkerpop.gremlin.jsr223.console.RemoteAcceptor
-
 import java.util.concurrent.atomic.AtomicBoolean
 
 import org.apache.commons.lang3.StringUtils
@@ -29,9 +27,6 @@ import org.apache.commons.lang3.StringUtils
  */
 class Mediator {
     public final Map<String, PluggedIn> availablePlugins = [:]
-    public final List<RemoteAcceptor> remotes = []
-    public int position
-    public boolean localEvaluation = true
 
     /**
      * Determines when the Console is evaluating/iterating input/result.
@@ -48,32 +43,6 @@ class Mediator {
 
     public Mediator(final Console console) {
         this.console = console
-    }
-
-    public RemoteAcceptor currentRemote() { return remotes.get(position) }
-
-    def addRemote(final RemoteAcceptor remote) {
-        remotes.add(remote)
-        position = remotes.size() - 1
-        return remote
-    }
-
-    def removeCurrent() {
-        final RemoteAcceptor toRemove = remotes.remove(position)
-        position = 0
-        return toRemove
-    }
-
-    def RemoteAcceptor nextRemote() {
-        position++
-        if (position >= remotes.size()) position = 0
-        return currentRemote()
-    }
-
-    def RemoteAcceptor previousRemote() {
-        position--
-        if (position < 0) position = remotes.size() - 1
-        return currentRemote()
     }
 
     def showShellEvaluationOutput(final boolean show) {
@@ -110,13 +79,6 @@ class Mediator {
     }
 
     def void close() {
-        remotes.each { remote ->
-            try {
-                remote.close()
-            } catch (Exception ignored) {
-
-            }
-        }
+        // do cleanup if needed
     }
-
 }

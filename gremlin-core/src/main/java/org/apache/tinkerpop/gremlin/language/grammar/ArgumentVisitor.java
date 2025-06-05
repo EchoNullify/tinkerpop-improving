@@ -18,6 +18,8 @@
  */
 package org.apache.tinkerpop.gremlin.language.grammar;
 
+import org.apache.tinkerpop.gremlin.process.traversal.step.GType;
+import org.apache.tinkerpop.gremlin.process.traversal.step.GValue;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.util.iterator.IteratorUtils;
 
@@ -90,7 +92,12 @@ public class ArgumentVisitor extends DefaultGremlinBaseVisitor<Object> {
      * Wrapper for visit function for {@code Map} types.
      */
     public Map parseMap(final GremlinParser.GenericMapNullableArgumentContext ctx) {
-        return (Map) visitGenericMapNullableArgument(ctx);
+        Object literalOrVar = visitGenericMapNullableArgument(ctx);
+        if (GValue.valueInstanceOf(literalOrVar, GType.MAP)) {
+            return ((GValue<Map>) literalOrVar).get();
+        } else {
+            return (Map) literalOrVar;
+        }
     }
 
     /**
@@ -110,8 +117,40 @@ public class ArgumentVisitor extends DefaultGremlinBaseVisitor<Object> {
     /**
      * Wrapper to visit function for string types.
      */
-    public String parseString(final GremlinParser.StringNullableArgumentContext ctx) {
-        return (String) visitStringNullableArgument(ctx);
+    public GValue<String> parseString(final GremlinParser.StringNullableArgumentContext ctx) {
+        Object literalOrVar = visitStringNullableArgument((ctx));
+        if (GValue.valueInstanceOf(literalOrVar, GType.STRING)) {
+            return (GValue<String>) literalOrVar;
+        } else {
+            return GValue.ofString(null, (String) literalOrVar);
+        }
+    }
+
+    /**
+     * Equivalent to {@link ArgumentVisitor#visitIntegerArgument(GremlinParser.IntegerArgumentContext)} except this
+     * method promotes output types to either Long or GValue<Long>. (visitIntegerArgument() may produce byte, short,
+     * int, or long depending on the input script)
+     */
+    public Object parseLong(final GremlinParser.IntegerArgumentContext ctx) {
+        if (ctx.integerLiteral() != null) {
+            return antlr.genericVisitor.parseIntegral(ctx.integerLiteral()).longValue();
+        } else {
+            Object var = visitVariable(ctx.variable());
+            if (var instanceof Number) {
+                return ((Number) var).longValue();
+            }
+            if (GValue.valueInstanceOf(var, GType.LONG)) {
+                return var;
+            } else if (GValue.valueInstanceOf(var, GType.INTEGER)) {
+                return GValue.ofLong(((GValue<Integer>) var).getName(), ((GValue<Integer>) var).get().longValue());
+            } else if (GValue.valueInstanceOf(var, GType.SHORT)) {
+                return GValue.ofLong(((GValue<Short>) var).getName(), ((GValue<Short>) var).get().longValue());
+            } else if (GValue.valueInstanceOf(var, GType.BYTE)) {
+                return GValue.ofLong(((GValue<Byte>) var).getName(), ((GValue<Byte>) var).get().longValue());
+            } else {
+                throw new GremlinParserException(String.format("Expected variable [%s] to resolve to an integer type, instead found: %s", ctx.variable().Identifier().getSymbol(), var.getClass().getName()));
+            }
+        }
     }
 
     @Override
@@ -198,19 +237,30 @@ public class ArgumentVisitor extends DefaultGremlinBaseVisitor<Object> {
     /**
      * Parse a string literal varargs, and return a string array
      */
-    public String[] parseStringVarargs(final GremlinParser.StringNullableArgumentVarargsContext varargsArgumentContext) {
+    public GValue<String>[] parseStringVarargs(final GremlinParser.StringNullableArgumentVarargsContext varargsArgumentContext) {
         if (varargsArgumentContext == null || varargsArgumentContext.stringNullableArgument() == null) {
-            return new String[0];
+            return new GValue[0];
         }
         return varargsArgumentContext.stringNullableArgument()
                 .stream()
                 .filter(Objects::nonNull)
                 .map(antlr.argumentVisitor::parseString)
-                .toArray(String[]::new);
+                .toArray(GValue[]::new);
     }
 
     @Override
     public Object visitVariable(final GremlinParser.VariableContext ctx) {
         return resolver.apply(ctx.getText(), ctx);
+    }
+
+    /**
+     * Create a new {@code GValue} from a particular value but without the specified name. If the argument provide is
+     * already a {@code GValue} then it is returned as-is.
+     *
+     * @param value the value of the variable
+     */
+    public static <V> GValue<V> asGValue(final V value) {
+        if (value instanceof GValue) return (GValue) value;
+        return GValue.of(null, value);
     }
 }

@@ -32,11 +32,11 @@ namespace Gremlin.Net.Process.Traversal.Strategy.Decoration
         {
         }
 
-        public HaltedTraverserStrategy(string? haltedTraverserFactory = null)
+        public HaltedTraverserStrategy(string? haltedTraverserFactoryName = null)
             : this()
         {
-            if (haltedTraverserFactory != null)
-                Configuration["haltedTraverserFactory"] = haltedTraverserFactory;
+            if (haltedTraverserFactoryName != null)
+                Configuration["haltedTraverserFactory"] = haltedTraverserFactoryName;
         }
     }
 #pragma warning restore 1591

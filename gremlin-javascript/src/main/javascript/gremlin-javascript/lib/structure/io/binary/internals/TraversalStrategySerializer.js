@@ -20,13 +20,12 @@
 /**
  * @author Igor Ostapenko
  */
-'use strict';
 
-const { Buffer } = require('buffer');
+import { Buffer } from 'buffer';
 
-const { TraversalStrategySerializer: GraphsonTraversalStrategySerializer } = require('../../type-serializers');
+import { TraversalStrategySerializer as GraphsonTraversalStrategySerializer } from '../../type-serializers.js';
 
-module.exports = class TraversalStrategySerializer {
+export default class TraversalStrategySerializer {
   constructor(ioc) {
     this.ioc = ioc;
     this.graphsonTraversalStrategySerializer = new GraphsonTraversalStrategySerializer();
@@ -66,4 +65,4 @@ module.exports = class TraversalStrategySerializer {
 
     return Buffer.concat(bufs);
   }
-};
+}

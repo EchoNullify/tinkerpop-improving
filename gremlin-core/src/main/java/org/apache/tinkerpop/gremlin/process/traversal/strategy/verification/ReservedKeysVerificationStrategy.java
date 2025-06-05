@@ -28,6 +28,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.step.map.AddVertexStartSte
 import org.apache.tinkerpop.gremlin.process.traversal.step.map.AddVertexStep;
 import org.apache.tinkerpop.gremlin.process.traversal.step.sideEffect.AddPropertyStep;
 import org.apache.tinkerpop.gremlin.process.traversal.step.util.Parameters;
+import org.apache.tinkerpop.gremlin.util.GremlinDisabledListDelimiterHandler;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;

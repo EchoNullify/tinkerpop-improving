@@ -20,17 +20,11 @@
 /**
  * @author Jorge Bay Gondra
  */
-'use strict';
 
-const assert = require('assert');
-const graph = require('../../lib/structure/graph');
-const t = require('../../lib/process/traversal.js');
-const gs = require('../../lib/structure/io/graph-serializer.js');
-const utils = require('../../lib/utils');
-const { ConnectiveStrategy, SeedStrategy } = require("../../lib/process/traversal-strategy");
-const GraphSONReader = gs.GraphSONReader;
-const GraphSONWriter = gs.GraphSONWriter;
-const P = t.P;
+import assert from 'assert';
+import { Vertex } from '../../lib/structure/graph.js';
+import { P, cardinality } from '../../lib/process/traversal.js';
+import { GraphSONReader, GraphSONWriter } from '../../lib/structure/io/graph-serializer.js';
 
 describe('GraphSONReader', function () {
   it('should parse GraphSON null', function () {
@@ -97,7 +91,7 @@ describe('GraphSONReader', function () {
           "age":[{"id":{"@type":"g:Int64","@value":1},"value":{"@type":"g:Int32","@value":29}}]}}};
     const reader = new GraphSONReader(obj);
     const result = reader.read(obj);
-    assert.ok(result instanceof graph.Vertex);
+    assert.ok(result instanceof Vertex);
     assert.strictEqual(result.label, 'person');
     assert.strictEqual(typeof result.id, 'number');
     assert.ok(result.properties);
@@ -129,8 +123,8 @@ describe('GraphSONReader', function () {
     assert.ok(result.objects);
     assert.ok(result.labels);
     assert.strictEqual(result.objects[2], 'lop');
-    assert.ok(result.objects[0] instanceof graph.Vertex);
-    assert.ok(result.objects[1] instanceof graph.Vertex);
+    assert.ok(result.objects[0] instanceof Vertex);
+    assert.ok(result.objects[1] instanceof Vertex);
     assert.strictEqual(result.objects[0].label, 'person');
     assert.strictEqual(result.objects[1].label, 'software');
   });
@@ -181,8 +175,8 @@ describe('GraphSONReader', function () {
     assert.ok(result.objects);
     assert.ok(result.labels);
     assert.strictEqual(result.objects[2], 'lop');
-    assert.ok(result.objects[0] instanceof graph.Vertex);
-    assert.ok(result.objects[1] instanceof graph.Vertex);
+    assert.ok(result.objects[0] instanceof Vertex);
+    assert.ok(result.objects[1] instanceof Vertex);
     assert.strictEqual(result.objects[0].label, 'person');
     assert.strictEqual(result.objects[1].label, 'software');
   });
@@ -224,7 +218,7 @@ describe('GraphSONWriter', function () {
   });
   it('should write enum values', function () {
     const writer = new GraphSONWriter();
-    assert.strictEqual(writer.write(t.cardinality.set), '{"@type":"g:Cardinality","@value":"set"}');
+    assert.strictEqual(writer.write(cardinality.set), '{"@type":"g:Cardinality","@value":"set"}');
   });
   it('should write P', function () {
     const writer = new GraphSONWriter();
@@ -257,15 +251,5 @@ describe('GraphSONWriter', function () {
     const writer = new GraphSONWriter();
     assert.strictEqual(writer.write(() => '(x,y) -> x.get() + y'),
         '{"@type":"g:Lambda","@value":{"arguments":2,"language":"gremlin-groovy","script":"(x,y) -> x.get() + y"}}');
-  });
-  it('should write Class values', function () {
-    const writer = new GraphSONWriter();
-    const expected = JSON.stringify({"@type": "g:Class", "@value": "org.apache.tinkerpop.gremlin.process.traversal.strategy.decoration.ConnectiveStrategy"});
-    assert.strictEqual(writer.write(ConnectiveStrategy), expected);
-  });
-  it('should write TraversalStrategy values', function () {
-    const writer = new GraphSONWriter();
-    const expected = JSON.stringify({"@type": "g:SeedStrategy", "@value": {"fqcn": "org.apache.tinkerpop.gremlin.process.traversal.strategy.decoration.SeedStrategy", "conf": {"seed":100}}});
-    assert.strictEqual(writer.write(new SeedStrategy({seed: 100})), expected);
   });
 });

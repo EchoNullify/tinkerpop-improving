@@ -20,6 +20,7 @@ package org.apache.tinkerpop.gremlin.language.translator;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.apache.tinkerpop.gremlin.language.grammar.GremlinParser;
+import org.apache.tinkerpop.gremlin.language.grammar.GremlinParser.GenericLiteralVarargsContext;
 import org.apache.tinkerpop.gremlin.structure.util.reference.ReferenceVertex;
 
 /**
@@ -55,15 +56,13 @@ public class GroovyTranslateVisitor extends TranslateVisitor {
         switch (lastCharacter) {
             case 'b':
                 // parse B/b as byte
-                sb.append("new Byte(");
+                sb.append("(byte)");
                 sb.append(integerLiteral, 0, lastCharIndex);
-                sb.append(")");
                 break;
             case 's':
                 // parse S/s as short
-                sb.append("new Short(");
+                sb.append("(short)");
                 sb.append(integerLiteral, 0, lastCharIndex);
-                sb.append(")");
                 break;
             case 'n':
                 // parse N/n as BigInteger which for groovy is "g" shorthand
@@ -95,8 +94,13 @@ public class GroovyTranslateVisitor extends TranslateVisitor {
                 sb.append(floatLiteral, 0, lastCharIndex).append(lastCharacter);
                 break;
             case 'm':
-                // parse N/n as BigDecimal which for groovy is "g" shorthand
-                sb.append(floatLiteral, 0, lastCharIndex).append("g");
+                // parse N/n as BigDecimal which for groovy is default for floating point numerics
+                if (!floatLiteral.contains(".")) {
+                    // 1g is interpreted as BigInteger, so 'g' suffix can't be used here
+                    sb.append("new BigDecimal(").append(floatLiteral, 0, lastCharIndex).append("L)");
+                } else {
+                    sb.append(floatLiteral, 0, lastCharIndex);
+                }
                 break;
             default:
                 // everything else just goes as specified
@@ -172,13 +176,40 @@ public class GroovyTranslateVisitor extends TranslateVisitor {
         return handleInject(ctx);
     }
 
-    /*
-    * very special handling for inject with second `null` argument like g.inject(1, null)
+    @Override
+    public Void visitTraversalMethod_hasLabel_String_String(final GremlinParser.TraversalMethod_hasLabel_String_StringContext ctx) {
+        // special handling for resolving ambiguous invocations of the hasLabel() step. coerces to the string form
+        if (ctx.getChildCount() > 4 && ctx.getChild(2).getText().equals("null")) {
+            final GremlinParser.StringNullableArgumentVarargsContext varArgs = ctx.stringNullableArgumentVarargs();
+            sb.append(ctx.getChild(0).getText());
+            sb.append("((String) null, ");
+
+            for (int i = 0; i < varArgs.getChildCount(); i += 2) {
+                if (varArgs.getChild(i).getText().equals("null")) {
+                    sb.append("(String) null");
+                } else {
+                    visit(varArgs.getChild(i));
+                }
+
+                if (i < varArgs.getChildCount() - 1) {
+                    sb.append(", ");
+                }
+            }
+
+            sb.append(")");
+            return null;
+        }
+
+        return visitChildren(ctx);
+    }
+
+    /**
+    * Special handling for inject with second `null` argument like g.inject(1, null)
     * inject() ends up being ambiguous with groovy's jdk extension of inject(Object initialValue, Closure closure)
     */
     private Void handleInject(final ParserRuleContext ctx) {
-        if (ctx.getChildCount() > 3 && ctx.getChild(2) instanceof GremlinParser.GenericLiteralVarargsContext) {
-            final GremlinParser.GenericLiteralVarargsContext varArgs = (GremlinParser.GenericLiteralVarargsContext) ctx.getChild(2);
+        if (ctx.getChildCount() > 3 && ctx.getChild(2) instanceof GremlinParser.GenericArgumentVarargsContext) {
+            final GremlinParser.GenericArgumentVarargsContext varArgs = (GremlinParser.GenericArgumentVarargsContext) ctx.getChild(2);
             if (varArgs.getChildCount() > 2 && "null".equals(varArgs.getChild(2).getText())) {
                 sb.append(ctx.getChild(0).getText());
                 sb.append("(");
@@ -200,5 +231,56 @@ public class GroovyTranslateVisitor extends TranslateVisitor {
         }
 
         return visitChildren(ctx);
+    }
+
+    @Override
+    public Void visitTraversalMethod_option_Merge_Map(final GremlinParser.TraversalMethod_option_Merge_MapContext ctx){
+        sb.append("option(");
+        visit(ctx.traversalMerge());
+        sb.append(", ");
+        tryCastMapNullableArgument(ctx.genericMapNullableArgument());
+        sb.append(")");
+        return null;
+    }
+
+    @Override
+    public Void visitTraversalMethod_mergeV_Map(final GremlinParser.TraversalMethod_mergeV_MapContext ctx){
+        sb.append("mergeV(");
+        tryCastMapNullableArgument(ctx.genericMapNullableArgument());
+        sb.append(")");
+        return null;
+    }
+
+    @Override
+    public Void visitTraversalSourceSpawnMethod_mergeV_Map(final GremlinParser.TraversalSourceSpawnMethod_mergeV_MapContext ctx){
+        sb.append("mergeV(");
+        tryCastMapNullableArgument(ctx.genericMapNullableArgument());
+        sb.append(")");
+        return null;
+    }
+
+    @Override
+    public Void visitTraversalMethod_mergeE_Map(final GremlinParser.TraversalMethod_mergeE_MapContext ctx){
+        sb.append("mergeE(");
+        tryCastMapNullableArgument(ctx.genericMapNullableArgument());
+        sb.append(")");
+        return null;
+    }
+
+    @Override
+    public Void visitTraversalSourceSpawnMethod_mergeE_Map(final GremlinParser.TraversalSourceSpawnMethod_mergeE_MapContext ctx){
+        sb.append("mergeE(");
+        tryCastMapNullableArgument(ctx.genericMapNullableArgument());
+        sb.append(")");
+        return null;
+    }
+
+    private void tryCastMapNullableArgument(GremlinParser.GenericMapNullableArgumentContext ctx) {
+        if (ctx.genericMapNullableLiteral() != null
+                && ctx.genericMapNullableLiteral().nullLiteral() != null) {
+            sb.append("(Map) null");
+        } else {
+            visit(ctx);
+        }
     }
 }

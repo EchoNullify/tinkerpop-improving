@@ -80,8 +80,8 @@ traversalSourceSelfMethod_withSack
     ;
 
 traversalSourceSelfMethod_withSideEffect
-    : K_WITHSIDEEFFECT LPAREN stringArgument COMMA genericArgument RPAREN
-    | K_WITHSIDEEFFECT LPAREN stringArgument COMMA genericArgument COMMA traversalBiFunction RPAREN
+    : K_WITHSIDEEFFECT LPAREN stringLiteral COMMA genericArgument RPAREN
+    | K_WITHSIDEEFFECT LPAREN stringLiteral COMMA genericArgument COMMA traversalBiFunction RPAREN
     ;
 
 traversalSourceSelfMethod_withStrategies
@@ -93,8 +93,8 @@ traversalSourceSelfMethod_withoutStrategies
     ;
 
 traversalSourceSelfMethod_with
-    : K_WITH LPAREN stringArgument RPAREN
-    | K_WITH LPAREN stringArgument COMMA genericArgument RPAREN
+    : K_WITH LPAREN stringLiteral RPAREN
+    | K_WITH LPAREN stringLiteral COMMA genericArgument RPAREN
     ;
 
 traversalSourceSpawnMethod
@@ -149,10 +149,10 @@ traversalSourceSpawnMethod_mergeE
 
 traversalSourceSpawnMethod_call
     : K_CALL LPAREN RPAREN #traversalSourceSpawnMethod_call_empty
-    | K_CALL LPAREN stringArgument RPAREN #traversalSourceSpawnMethod_call_string
-    | K_CALL LPAREN stringArgument COMMA genericMapArgument RPAREN #traversalSourceSpawnMethod_call_string_map
-    | K_CALL LPAREN stringArgument COMMA nestedTraversal RPAREN #traversalSourceSpawnMethod_call_string_traversal
-    | K_CALL LPAREN stringArgument COMMA genericMapArgument COMMA nestedTraversal RPAREN #traversalSourceSpawnMethod_call_string_map_traversal
+    | K_CALL LPAREN stringLiteral RPAREN #traversalSourceSpawnMethod_call_string
+    | K_CALL LPAREN stringLiteral COMMA genericMapArgument RPAREN #traversalSourceSpawnMethod_call_string_map
+    | K_CALL LPAREN stringLiteral COMMA nestedTraversal RPAREN #traversalSourceSpawnMethod_call_string_traversal
+    | K_CALL LPAREN stringLiteral COMMA genericMapArgument COMMA nestedTraversal RPAREN #traversalSourceSpawnMethod_call_string_map_traversal
     ;
 
 traversalSourceSpawnMethod_union
@@ -202,6 +202,7 @@ traversalMethod
     | traversalMethod_cyclicPath
     | traversalMethod_dedup
     | traversalMethod_difference
+    | traversalMethod_discard
     | traversalMethod_disjunct
     | traversalMethod_drop
     | traversalMethod_elementMap
@@ -469,6 +470,10 @@ traversalMethod_difference
     : K_DIFFERENCE LPAREN genericArgument RPAREN #traversalMethod_difference_Object
     ;
 
+traversalMethod_discard
+    : 'discard' LPAREN RPAREN
+    ;
+
 traversalMethod_disjunct
     : K_DISJUNCT LPAREN genericArgument RPAREN #traversalMethod_disjunct_Object
     ;
@@ -575,11 +580,11 @@ traversalMethod_identity
     ;
 
 traversalMethod_in
-    : K_IN LPAREN stringNullableLiteralVarargs RPAREN
+    : K_IN LPAREN stringNullableArgumentVarargs RPAREN
     ;
 
 traversalMethod_inE
-    : K_INE LPAREN stringNullableLiteralVarargs RPAREN
+    : K_INE LPAREN stringNullableArgumentVarargs RPAREN
     ;
 
 traversalMethod_intersect
@@ -679,7 +684,7 @@ traversalMethod_min
     ;
 
 traversalMethod_none
-    : K_NONE LPAREN RPAREN
+    : K_NONE LPAREN traversalPredicate RPAREN #traversalMethod_none_P
     ;
 
 traversalMethod_not
@@ -799,7 +804,7 @@ traversalMethod_sack
     ;
 
 traversalMethod_sample
-    : K_SAMPLE LPAREN traversalScope COMMA integerArgument RPAREN #traversalMethod_sample_Scope_int
+    : K_SAMPLE LPAREN traversalScope COMMA integerLiteral RPAREN #traversalMethod_sample_Scope_int
     | K_SAMPLE LPAREN integerLiteral RPAREN #traversalMethod_sample_int
     ;
 
@@ -878,7 +883,7 @@ traversalMethod_to
     ;
 
 traversalMethod_toE
-    : K_TOE LPAREN traversalDirection (COMMA stringNullableLiteralVarargs)? RPAREN
+    : K_TOE LPAREN traversalDirection (COMMA stringNullableArgumentVarargs)? RPAREN
     ;
 
 traversalMethod_toLower

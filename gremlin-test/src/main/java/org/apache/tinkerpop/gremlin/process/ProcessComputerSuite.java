@@ -72,8 +72,8 @@ import org.apache.tinkerpop.gremlin.process.traversal.step.map.ProgramTest;
 import org.apache.tinkerpop.gremlin.process.traversal.step.map.ProjectTest;
 import org.apache.tinkerpop.gremlin.process.traversal.step.map.PropertiesTest;
 import org.apache.tinkerpop.gremlin.process.traversal.step.map.ReadTest;
-import org.apache.tinkerpop.gremlin.process.traversal.step.map.ShortestPathTest;
 import org.apache.tinkerpop.gremlin.process.traversal.step.map.SelectTest;
+import org.apache.tinkerpop.gremlin.process.traversal.step.map.ShortestPathTest;
 import org.apache.tinkerpop.gremlin.process.traversal.step.map.SumTest;
 import org.apache.tinkerpop.gremlin.process.traversal.step.map.UnfoldTest;
 import org.apache.tinkerpop.gremlin.process.traversal.step.map.ValueMapTest;
@@ -92,7 +92,6 @@ import org.apache.tinkerpop.gremlin.process.traversal.step.sideEffect.SubgraphTe
 import org.apache.tinkerpop.gremlin.process.traversal.step.sideEffect.TreeTest;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.decoration.SeedStrategyProcessTest;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.decoration.SubgraphStrategyProcessTest;
-import org.apache.tinkerpop.gremlin.process.traversal.strategy.decoration.TranslationStrategyProcessTest;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.optimization.EarlyLimitStrategyProcessTest;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.optimization.IncidentToAdjacentStrategyProcessTest;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.verification.ReadOnlyStrategyProcessTest;
@@ -207,9 +206,6 @@ public class ProcessComputerSuite extends AbstractGremlinSuite {
             PageRankVertexProgramTest.class,
             ShortestPathVertexProgramTest.class,
             CloneVertexProgramTest.class,
-
-            // creations
-            TranslationStrategyProcessTest.class,
 
             // decorations
             ReadOnlyStrategyProcessTest.class,

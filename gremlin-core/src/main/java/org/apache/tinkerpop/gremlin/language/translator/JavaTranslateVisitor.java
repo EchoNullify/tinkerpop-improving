@@ -62,6 +62,7 @@ public class JavaTranslateVisitor extends AbstractTranslateVisitor {
 
             final List<ParseTree> configs = ctx.children.stream().
                     filter(c -> c instanceof GremlinParser.ConfigurationContext).collect(Collectors.toList());
+
             if (configs.size() > 0 && ctx.getChild(1).getText().equals(OptionsStrategy.class.getSimpleName())) {
                 for (int ix = 0; ix < configs.size(); ix++) {
                     sb.append(".with(\"");

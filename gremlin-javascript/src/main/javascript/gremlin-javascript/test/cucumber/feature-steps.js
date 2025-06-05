@@ -20,28 +20,22 @@
 /**
  * @author Jorge Bay Gondra
  */
-'use strict';
 
-const {Given, Then, When, setDefaultTimeout} = require('cucumber');
+import chaiString from 'chai-string';
+import { Given, Then, When, setDefaultTimeout } from '@cucumber/cucumber';
 // Setting Cucumber timeout to 10s for Floating Errors on Windows on GitHub Actions
 setDefaultTimeout(10 * 1000);
-const chai = require('chai')
-chai.use(require('chai-string'));
-const expect = chai.expect;
-const util = require('util');
-const gremlin = require('./gremlin').gremlin;
-const graphModule = require('../../lib/structure/graph');
-const graphTraversalModule = require('../../lib/process/graph-traversal');
-const traversalModule = require('../../lib/process/traversal');
-const utils = require('../../lib/utils');
-const traversal = require('../../lib/process/anonymous-traversal').traversal;
-const Path = graphModule.Path;
-const __ = graphTraversalModule.statics;
-const t = traversalModule.t;
-const P = traversalModule.P;
-const direction = traversalModule.direction;
-const merge = traversalModule.merge;
-const deepMembersById = require('./element-comparison').deepMembersById;
+import { use, expect } from 'chai';
+use(chaiString);
+import { inspect, format, inherits } from 'util';
+import { gremlin } from './gremlin.js';
+import { Path, Vertex, Edge } from '../../lib/structure/graph.js';
+import { statics } from '../../lib/process/graph-traversal.js';
+import { t, P, direction, merge, barrier, cardinality, column, order, TextP, IO, pick, pop, scope, operator, withOptions } from '../../lib/process/traversal.js';
+import { toLong } from '../../lib/utils.js';
+import anon from '../../lib/process/anonymous-traversal.js';
+const __ = statics;
+import { deepMembersById } from './element-comparison.js';
 const parsers = [
   [ 'str\\[(.*)\\]', (stringValue) => stringValue ], //returns the string value as is
   [ 'vp\\[(.+)\\]', toVertexProperty ],
@@ -64,7 +58,7 @@ const parsers = [
   [ 'M\\[(.+)\\]', toMerge ]
 ].map(x => [ new RegExp('^' + x[0] + '$'), x[1] ]);
 
-chai.use(function (chai, chaiUtils) {
+use(function (chai, chaiUtils) {
   chai.Assertion.overwriteMethod('members', function (_super) {
     return deepMembersById;
   });
@@ -111,7 +105,7 @@ Given(/^the (.+) graph$/, function (graphName) {
   }
   this.graphName = graphName;
   const data = this.getData();
-  this.g = traversal().with_(data.connection);
+  this.g = anon.traversal().with_(data.connection);
 
   if (this.isGraphComputer) {
     this.g = this.g.withComputer();
@@ -137,10 +131,6 @@ Given('the traversal of', function (traversalText) {
   this.traversal = gremlin[this.scenario].shift()(p);
 });
 
-Given(/^using the parameter (.+) of P\.(.+)\("(.+)"\)$/, function (paramName, pval, stringValue) {
-  this.parameters[paramName] =  new P(pval, parseValue.call(this, stringValue))
-});
-
 Given(/^using the parameter (.+) defined as "(.+)"$/, function (paramName, stringValue) {
   // Remove escaped chars
   stringValue = stringValue.replace(/\\"/g, '"');
@@ -160,14 +150,14 @@ Given(/^using the parameter (.+) defined as "(.+)"$/, function (paramName, strin
 
 var removeProperties = function(p) {
   if (p === undefined) {   
-  } else if (p instanceof graphModule.Vertex || p instanceof graphModule.Edge) {
+  } else if (p instanceof Vertex || p instanceof Edge) {
     p.properties = undefined;
   } else if (p instanceof Array) {
     p.forEach(removeProperties)
   } else if (p instanceof Map) {
     removeProperties(Array.from(p.keys()))
     removeProperties(Array.from(p.values()))
-  } else if (p instanceof graphModule.Path) {
+  } else if (p instanceof Path) {
     removeProperties(p.objects)
   }
 
@@ -192,11 +182,11 @@ Then('the traversal will raise an error', function() {
 Then(/^the traversal will raise an error with message (\w+) text of "(.+)"$/, function(comparison, expectedMessage) {
   expect(this.result).to.be.a.instanceof(Error);
   if (comparison === "containing") {
-    expect(this.result.message).to.contain(expectedMessage)
+    expect(this.result.message.toUpperCase()).to.contain(expectedMessage.toUpperCase())
   } else if (comparison === "starting") {
-    expect(this.result.message).to.startWith(expectedMessage)
+    expect(this.result.message.toUpperCase()).to.startWith(expectedMessage.toUpperCase())
   } else if (comparison === "ending") {
-    expect(this.result.message).to.endWith(expectedMessage)
+    expect(this.result.message.toUpperCase()).to.endWith(expectedMessage.toUpperCase())
   } else {
     throw new Error('unknown comparison \'' + comparison + '\'- must be: containing, ending or starting');
   }
@@ -262,7 +252,7 @@ Then(/^the result should have a count of (\d+)$/, function (stringCount) {
       count = Object.keys(this.result).length;
     }
     else {
-      throw new Error('result not supported: ' + util.inspect(this.result));
+      throw new Error('result not supported: ' + inspect(this.result));
     }
     expect(count).to.be.equal(expected);
     return;
@@ -276,27 +266,27 @@ function getSandbox(g, parameters) {
   const sandbox = {
     g: g,
     __: __,
-    Barrier: traversalModule.barrier,
-    Cardinality: traversalModule.cardinality,
-    Column: traversalModule.column,
+    Barrier: barrier,
+    Cardinality: cardinality,
+    Column: column,
     Direction: {
-      BOTH: traversalModule.direction.both,
-      IN: traversalModule.direction.in,
-      OUT: traversalModule.direction.out,
-      from_: traversalModule.direction.in,
-      to: traversalModule.direction.out,
+      BOTH: direction.both,
+      IN: direction.in,
+      OUT: direction.out,
+      from_: direction.in,
+      to: direction.out,
     },
-    Order: traversalModule.order,
-    P: traversalModule.P,
-    TextP: traversalModule.TextP,
-    IO: traversalModule.IO,
-    Pick: traversalModule.pick,
-    Pop: traversalModule.pop,
-    Scope: traversalModule.scope,
-    Operator: traversalModule.operator,
-    T: traversalModule.t,
-    toLong: utils.toLong,
-    WithOptions: traversalModule.withOptions
+    Order: order,
+    P: P,
+    TextP: TextP,
+    IO: IO,
+    Pick: pick,
+    Pop: pop,
+    Scope: scope,
+    Operator: operator,
+    T: t,
+    toLong: toLong,
+    WithOptions: withOptions
   };
   // Pass the parameter to the sandbox
   Object.keys(parameters).forEach(paramName => sandbox[paramName] = parameters[paramName]);
@@ -352,7 +342,7 @@ function toVertex(name) {
   if (vertices.has(name))
     return this.getData().vertices.get(name);
   else
-    return new graphModule.Vertex(name, "vertex")
+    return new Vertex(name, "vertex")
 }
 
 function toVertexId(name) {
@@ -366,7 +356,7 @@ function toVertexIdString(name) {
 function toEdge(name) {
   const e = this.getData().edges[name];
   if (!e) {
-    throw new Error(util.format('Edge with key "%s" not found', name));
+    throw new Error(format('Edge with key "%s" not found', name));
   }
   return e;
 }
@@ -382,7 +372,7 @@ function toEdgeIdString(name) {
 function toVertexProperty(name) {
   const vp = this.getData().vertexProperties[name];
   if (!vp) {
-    throw new Error(util.format('VertexProperty with key "%s" not found', name));
+    throw new Error(format('VertexProperty with key "%s" not found', name));
   }
   return vp;
 }
@@ -423,18 +413,15 @@ function toArray(stringList) {
   return stringList.split(',').map(x => parseValue.call(this, x));
 }
 
-function toSet(stringList) {
-  if (stringList === '') {
-    return new Set();
-  }
-
-  const s = new Set();
-  stringList.split(',').forEach(x => s.add(parseValue.call(this, x)));
-  return s;
-}
-
 function toMap(stringMap) {
   return parseMapValue.call(this, JSON.parse(stringMap));
+}
+
+function toSet(stringSet) {
+  if (stringSet === '') {
+    return new Set();
+  }
+  return new Set(stringSet.split(',').map(x => parseValue.call(this, x)));
 }
 
 function parseMapValue(value) {
@@ -482,4 +469,4 @@ function IgnoreError(reason) {
   Error.captureStackTrace(this, IgnoreError);
 }
 
-util.inherits(IgnoreError, Error);
+inherits(IgnoreError, Error);
