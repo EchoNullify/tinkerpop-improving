@@ -168,19 +168,19 @@ Feature: Step - where()
       | result |
       | v[ripple] |
 
-#  Scenario: g_withSideEffectXa_g_VX2XX_VX1X_out_whereXneqXaXX
-#    Given the modern graph
-#    And using the parameter vid1 defined as "v[marko].id"
-#    And using the parameter v2 defined as "v[vadas]"
-#    And the traversal of
-#      """
-#      g.withSideEffect("a", v2).V(vid1).out().where(P.neq("a"))
-#      """
-#    When iterated to list
-#    Then the result should be unordered
-#      | result |
-#      | v[josh] |
-#      | v[lop] |
+  Scenario: g_withSideEffectXa_g_VX2XX_VX1X_out_whereXneqXaXX
+    Given the modern graph
+    And using the parameter vid1 defined as "v[marko].id"
+    And using the parameter vid2 defined as "v[vadas].id"
+    And the traversal of
+      """
+      g.withSideEffect("a", vid2).V(vid1).out().where(P.neq("a"))
+      """
+    When iterated to list
+    Then the result should be unordered
+      | result |
+      | v[josh] |
+      | v[lop] |
 
   Scenario: g_VX1X_repeatXbothEXcreatedX_whereXwithoutXeXX_aggregateXeX_otherVX_emit_path
     Given the modern graph
